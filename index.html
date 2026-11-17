@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>정보 교과 성취수준 MCP 길잡이</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F7F5FD;
+  --surface:#FFFFFF;
+  --lav-50:#F3EFFC;
+  --lav-100:#E9E2FA;
+  --lav-200:#D8CCF5;
+  --lav-300:#BBA8EC;
+  --lav-500:#8A72D6;
+  --lav-600:#7158C4;
+  --lav-700:#5A43A6;
+  --ink:#2B2540;
+  --ink-2:#5B5470;
+  --ink-3:#8A839E;
+  --line:#E6E0F5;
+  --mcp-bg:#FFF8D9;
+  --mcp-line:#F2DE8A;
+  --mcp-ink:#7A5C00;
+  --k:#C2550A;  /* 지식·이해 */
+  --k-bg:#FFF1E6;
+  --p:#1F8A47;  /* 과정·기능 */
+  --p-bg:#E8F6EE;
+  --v:#8B2FD0;  /* 가치·태도 */
+  --v-bg:#F4E8FD;
+  --radius:16px;
+  --shadow:0 1px 2px rgba(60,40,120,.05),0 6px 20px rgba(90,67,166,.07);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:"Noto Sans KR",system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:anywhere}
+button{font-family:inherit;cursor:pointer}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+
+/* header */
+header.top{background:linear-gradient(135deg,#EFE9FD 0%,#E4DAFA 55%,#D9CCF6 100%);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:16px;padding-top:22px;padding-bottom:22px;flex-wrap:wrap}
+.logo{width:46px;height:46px;border-radius:14px;background:var(--lav-600);display:grid;place-items:center;color:#fff;font-weight:800;font-size:15px;letter-spacing:-.5px;box-shadow:0 6px 16px rgba(113,88,196,.35);flex:none}
+.titles{flex:1;min-width:240px}
+.titles h1{margin:0;font-size:21px;font-weight:800;letter-spacing:-.4px}
+.titles p{margin:2px 0 0;color:var(--ink-2);font-size:13.5px}
+.search{position:relative;flex:0 1 320px;min-width:220px}
+.search input{width:100%;height:42px;border-radius:12px;border:1px solid var(--lav-200);background:rgba(255,255,255,.85);padding:0 14px 0 38px;font:inherit;font-size:14px;color:var(--ink);outline:none;transition:.15s}
+.search input:focus{border-color:var(--lav-500);box-shadow:0 0 0 4px rgba(138,114,214,.18);background:#fff}
+.search svg{position:absolute;left:12px;top:12px;color:var(--lav-500)}
+.results{position:absolute;top:48px;left:0;right:0;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);max-height:360px;overflow:auto;z-index:30;display:none}
+.results.show{display:block}
+.results button{display:block;width:100%;text-align:left;border:0;background:none;padding:10px 14px;font-size:13.5px;color:var(--ink);border-bottom:1px solid var(--lav-50)}
+.results button:hover,.results button.on{background:var(--lav-50)}
+.results .code{font-weight:700;color:var(--lav-700);margin-right:6px}
+.results .empty{padding:14px;color:var(--ink-3);font-size:13px}
+.icon-btn{height:42px;padding:0 14px;border-radius:12px;border:1px solid var(--lav-200);background:rgba(255,255,255,.85);color:var(--lav-700);font-size:13.5px;font-weight:700;display:flex;align-items:center;gap:6px}
+.icon-btn:hover{background:#fff;border-color:var(--lav-300)}
+
+/* steps */
+.steps{display:flex;gap:8px;align-items:center;margin:22px 0 14px;flex-wrap:wrap}
+.step{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-3);font-weight:500}
+.step .n{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--lav-100);color:var(--lav-600);font-size:12px;font-weight:800}
+.step.on{color:var(--ink)}
+.step.on .n{background:var(--lav-600);color:#fff}
+.step.done .n{background:var(--lav-300);color:#fff}
+.sep{width:22px;height:2px;background:var(--lav-200);border-radius:2px}
+
+/* section label */
+.label{font-size:13px;font-weight:700;color:var(--lav-700);margin:0 0 10px;display:flex;align-items:center;gap:8px}
+.label small{font-weight:500;color:var(--ink-3)}
+
+/* areas */
+.areas{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.area{position:relative;text-align:left;border:1.5px solid var(--line);background:var(--surface);border-radius:var(--radius);padding:16px 16px 14px;transition:.18s;box-shadow:0 1px 2px rgba(60,40,120,.04)}
+.area:hover{border-color:var(--lav-300);transform:translateY(-2px);box-shadow:var(--shadow)}
+.area .no{font-size:12px;font-weight:800;color:var(--lav-500);letter-spacing:.3px}
+.area .nm{display:block;font-size:16px;font-weight:800;margin:4px 0 8px;color:var(--ink);letter-spacing:-.3px}
+.area .meta{font-size:12px;color:var(--ink-3)}
+.area .ico{position:absolute;right:14px;top:14px;width:30px;height:30px;border-radius:10px;background:var(--lav-50);display:grid;place-items:center;color:var(--lav-600)}
+.area.on{background:linear-gradient(160deg,#7C64CF,#6A51BE);border-color:transparent;box-shadow:0 10px 24px rgba(106,81,190,.3)}
+.area.on .no,.area.on .meta{color:#E4DBFF}
+.area.on .nm{color:#fff}
+.area.on .ico{background:rgba(255,255,255,.18);color:#fff}
+
+/* standards */
+.std-section{margin-top:26px}
+.stds{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.std{text-align:left;border:1.5px solid var(--line);background:var(--surface);border-radius:14px;padding:12px 14px;transition:.15s;display:flex;flex-direction:column;gap:4px}
+.std:hover{border-color:var(--lav-300);background:#FDFCFF}
+.std .c{font-size:12.5px;font-weight:800;color:var(--lav-600)}
+.std .t{font-size:13.5px;color:var(--ink-2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.std.on{border-color:var(--lav-500);background:var(--lav-50);box-shadow:0 0 0 3px rgba(138,114,214,.15)}
+.std.on .t{color:var(--ink)}
+
+/* detail */
+.detail{margin:28px 0 40px}
+.hero{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:22px 24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero:before{content:"";position:absolute;inset:0 auto 0 0;width:6px;background:linear-gradient(180deg,var(--lav-300),var(--lav-600))}
+.hero .row1{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--lav-50);color:var(--lav-700);border:1px solid var(--lav-100)}
+.pill.code{background:var(--lav-600);color:#fff;border-color:transparent;font-size:13px}
+.hero h2{margin:12px 0 4px;font-size:20px;line-height:1.55;font-weight:800;letter-spacing:-.3px}
+.hero .by{font-size:12.5px;color:var(--ink-3)}
+.navs{margin-left:auto;display:flex;gap:6px}
+.navs button{height:34px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink-2);font-size:13px;font-weight:600;display:flex;align-items:center;gap:4px}
+.navs button:hover:not(:disabled){border-color:var(--lav-300);color:var(--lav-700)}
+.navs button:disabled{opacity:.4;cursor:default}
+
+.toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:18px 0 14px}
+.seg{display:inline-flex;background:var(--lav-100);border-radius:12px;padding:4px;gap:2px}
+.seg button{border:0;background:transparent;padding:7px 14px;border-radius:9px;font-size:13px;font-weight:700;color:var(--ink-2)}
+.seg button.on{background:#fff;color:var(--lav-700);box-shadow:0 1px 3px rgba(60,40,120,.12)}
+.legend{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto;align-items:center}
+.legend .lt{font-size:12px;color:var(--ink-3);margin-right:2px}
+.chip{border:1.5px solid transparent;border-radius:999px;padding:5px 12px 5px 10px;font-size:12.5px;font-weight:700;display:inline-flex;align-items:center;gap:6px;transition:.15s}
+.chip .dot{width:9px;height:9px;border-radius:50%}
+.chip.k{background:var(--k-bg);color:var(--k)} .chip.k .dot{background:var(--k)}
+.chip.p{background:var(--p-bg);color:var(--p)} .chip.p .dot{background:var(--p)}
+.chip.v{background:var(--v-bg);color:var(--v)} .chip.v .dot{background:var(--v)}
+.chip.on{border-color:currentColor}
+.chip.off{opacity:.4}
+
+/* levels */
+.levels{display:flex;flex-direction:column;gap:12px}
+.lv{display:grid;grid-template-columns:76px 1fr;background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 1px 2px rgba(60,40,120,.04)}
+.lv .badge{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#fff;font-weight:800}
+.lv .badge b{font-size:30px;line-height:1}
+.lv .badge span{font-size:10.5px;font-weight:600;opacity:.9}
+.lv[data-l=A] .badge{background:#5A43A6}
+.lv[data-l=B] .badge{background:#7158C4}
+.lv[data-l=C] .badge{background:#8A72D6}
+.lv[data-l=D] .badge{background:#A592E2}
+.lv[data-l=E] .badge{background:#BDAEEB}
+.lv .body{padding:16px 20px;display:grid;gap:12px}
+.block .bh{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.block .bt{font-size:12px;font-weight:800;letter-spacing:.2px;color:var(--ink-3)}
+.block .tx{font-size:15px;color:var(--ink);line-height:1.8}
+.block.mcp{background:var(--mcp-bg);border:1px solid var(--mcp-line);border-radius:14px;padding:12px 14px}
+.block.mcp .bt{color:var(--mcp-ink)}
+.mcp-tag{font-size:10.5px;font-weight:800;background:#F6D64A;color:#5C4500;padding:2px 7px;border-radius:6px;letter-spacing:.3px}
+.auto{font-size:10.5px;font-weight:600;color:var(--ink-3);border:1px dashed var(--lav-300);padding:1px 7px;border-radius:6px;cursor:help}
+.copy{margin-left:auto;border:0;background:transparent;color:var(--ink-3);font-size:12px;font-weight:600;display:flex;align-items:center;gap:4px;padding:3px 6px;border-radius:7px}
+.copy:hover{background:rgba(0,0,0,.05);color:var(--ink)}
+.copy.ok{color:var(--p)}
+
+/* category text */
+.s-k{color:var(--k);font-weight:600}
+.s-p{color:var(--p);font-weight:600}
+.s-v{color:var(--v);font-weight:600}
+.focus-k .s-p,.focus-k .s-v,.focus-k .s-n,
+.focus-p .s-k,.focus-p .s-v,.focus-p .s-n,
+.focus-v .s-k,.focus-v .s-p,.focus-v .s-n{opacity:.28}
+.focus-k .s-k{background:var(--k-bg);border-radius:4px;box-shadow:0 0 0 2px var(--k-bg)}
+.focus-p .s-p{background:var(--p-bg);border-radius:4px;box-shadow:0 0 0 2px var(--p-bg)}
+.focus-v .s-v{background:var(--v-bg);border-radius:4px;box-shadow:0 0 0 2px var(--v-bg)}
+.mono .s-k,.mono .s-p,.mono .s-v{color:inherit;font-weight:inherit}
+
+.view-desc .block.mcp{display:none}
+.view-mcp .block.desc{display:none}
+
+/* empty */
+.empty-state{margin:30px 0 50px;text-align:center;padding:40px 20px;border:2px dashed var(--lav-200);border-radius:20px;color:var(--ink-3);background:rgba(255,255,255,.5)}
+.empty-state .big{font-size:16px;font-weight:700;color:var(--lav-700);margin-bottom:4px}
+
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(43,37,64,.35);display:none;align-items:center;justify-content:center;padding:20px;z-index:50;backdrop-filter:blur(2px)}
+.modal.show{display:flex}
+.sheet{background:#fff;border-radius:20px;max-width:560px;width:100%;padding:24px 26px;box-shadow:0 20px 60px rgba(43,37,64,.25);max-height:90vh;overflow:auto}
+.sheet h3{margin:0 0 10px;font-size:18px;font-weight:800}
+.sheet p,.sheet li{font-size:14px;color:var(--ink-2)}
+.sheet ul{padding-left:18px}
+.sheet .close{float:right;border:0;background:var(--lav-50);color:var(--lav-700);width:32px;height:32px;border-radius:10px;font-size:18px}
+
+/* correction requests */
+.req-btn{background:var(--lav-600);color:#fff;border-color:transparent}
+.req-btn:hover{background:var(--lav-700)!important;color:#fff}
+.req-btn .cnt{background:#fff;color:var(--lav-700);border-radius:999px;font-size:11px;padding:0 7px;min-width:20px;text-align:center}
+.fix-toggle{border:1.5px dashed var(--lav-300);background:#fff;color:var(--lav-700);border-radius:12px;padding:7px 13px;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px}
+.fix-toggle.on{background:var(--lav-600);color:#fff;border-style:solid;border-color:var(--lav-600)}
+.fix-hint{display:none;margin:0 0 12px;padding:10px 14px;border-radius:12px;background:var(--lav-50);border:1px solid var(--lav-100);font-size:13px;color:var(--lav-700)}
+.fixmode .fix-hint{display:block}
+.fixmode .tx span[data-k]{cursor:pointer;border-radius:4px;transition:background .12s;box-shadow:inset 0 -2px 0 rgba(138,114,214,.35)}
+.fixmode .tx span[data-k]:hover{background:var(--lav-100)}
+.tx span.has-req{text-decoration:underline wavy #E0A100;text-underline-offset:4px;text-decoration-thickness:1.5px}
+.tx span.fixed{box-shadow:inset 0 -2px 0 currentColor}
+.req-form .phrase{background:var(--lav-50);border-radius:12px;padding:10px 12px;font-size:14.5px;margin:6px 0 12px;line-height:1.7}
+.req-form .meta{font-size:12.5px;color:var(--ink-3);margin-bottom:4px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 12px}
+.opt{border:1.5px solid var(--line);border-radius:12px;padding:9px 10px;background:#fff;font-size:13.5px;font-weight:700;display:flex;align-items:center;gap:8px;color:var(--ink-2)}
+.opt .dot{width:10px;height:10px;border-radius:50%;background:#C9C3D6}
+.opt.k .dot{background:var(--k)}.opt.p .dot{background:var(--p)}.opt.v .dot{background:var(--v)}
+.opt.on{border-color:var(--lav-500);background:var(--lav-50);color:var(--ink)}
+.opt.cur{opacity:.45;cursor:not-allowed}
+.opt.cur:after{content:"현재";margin-left:auto;font-size:11px;font-weight:600}
+.req-form label{display:block;font-size:12.5px;font-weight:700;color:var(--ink-2);margin:10px 0 4px}
+.req-form textarea,.req-form input{width:100%;border:1px solid var(--lav-200);border-radius:10px;padding:9px 11px;font:inherit;font-size:14px;color:var(--ink);outline:none}
+.req-form textarea{min-height:76px;resize:vertical}
+.req-form textarea:focus,.req-form input:focus{border-color:var(--lav-500);box-shadow:0 0 0 3px rgba(138,114,214,.16)}
+.btn-row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
+.btn{border:0;border-radius:11px;padding:9px 16px;font-size:13.5px;font-weight:700}
+.btn.primary{background:var(--lav-600);color:#fff}
+.btn.primary:hover{background:var(--lav-700)}
+.btn.primary:disabled{opacity:.45;cursor:default}
+.btn.ghost{background:var(--lav-50);color:var(--lav-700)}
+.btn.sm{padding:6px 11px;font-size:12.5px;border-radius:9px}
+.btn.ok{background:var(--p-bg);color:var(--p)}
+.btn.hold{background:#F1EEF6;color:var(--ink-2)}
+.btn.del{background:#FDECEC;color:#B42318}
+.note{font-size:12.5px;color:var(--ink-3);margin-top:10px}
+.fallback{background:#FFF8E6;border:1px solid #F2DE8A;border-radius:12px;padding:10px 12px;font-size:13px;color:#6B5200;margin-top:12px}
+.fallback pre{white-space:pre-wrap;font:inherit;background:#fff;border-radius:8px;padding:8px 10px;margin:8px 0 0;font-size:12.5px;color:var(--ink)}
+.msg{font-size:13px;margin-top:10px;font-weight:600}
+.msg.err{color:#B42318}.msg.okm{color:var(--p)}
+.sheet.wide{max-width:760px}
+.filters{display:flex;gap:6px;margin:6px 0 14px;flex-wrap:wrap}
+.filters button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 12px;font-size:12.5px;font-weight:700;color:var(--ink-2)}
+.filters button.on{background:var(--lav-600);border-color:var(--lav-600);color:#fff}
+.rq{border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px;background:#fff}
+.rq .h{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12.5px;color:var(--ink-3)}
+.rq .h b{color:var(--lav-700)}
+.rq .ph{font-size:14px;margin:6px 0;line-height:1.7}
+.rq .chg{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;flex-wrap:wrap}
+.rq .nt{font-size:13px;color:var(--ink-2);background:var(--lav-50);border-radius:9px;padding:7px 10px;margin-top:8px;white-space:pre-wrap}
+.rq .acts{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.st{font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;margin-left:auto}
+.st.open{background:#FFF3C4;color:#7A5C00}.st.applied{background:var(--p-bg);color:var(--p)}.st.rejected{background:#EEEAF4;color:var(--ink-3)}
+.cat-tag{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:999px;font-size:12px}
+.cat-tag.k{background:var(--k-bg);color:var(--k)}.cat-tag.p{background:var(--p-bg);color:var(--p)}.cat-tag.v{background:var(--v-bg);color:var(--v)}.cat-tag.n{background:#F1EEF6;color:var(--ink-3)}
+.empty-list{text-align:center;color:var(--ink-3);padding:26px 0;font-size:13.5px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:12px;font-size:13.5px;opacity:0;transition:.25s;z-index:80;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+footer{border-top:1px solid var(--line);padding:22px 0 30px;color:var(--ink-3);font-size:12.5px}
+footer .wrap{display:flex;gap:10px 24px;flex-wrap:wrap;justify-content:space-between}
+footer b{color:var(--ink-2);font-weight:700}
+
+@media (max-width:900px){
+  .areas{grid-template-columns:repeat(2,1fr)}
+  .area:last-child{grid-column:span 2}
+  .legend{margin-left:0}
+}
+@media (max-width:560px){
+  .wrap{padding:0 14px}
+  .areas{grid-template-columns:1fr 1fr;gap:8px}
+  .area{padding:12px}
+  .area .nm{font-size:14.5px}
+  .area .ico{display:none}
+  .lv{grid-template-columns:1fr}
+  .lv .badge{flex-direction:row;justify-content:flex-start;gap:8px;padding:8px 16px}
+  .lv .badge b{font-size:20px}
+  .lv .body{padding:14px}
+  .hero{padding:18px}
+  .hero h2{font-size:17px}
+  .navs{margin-left:0;width:100%}
+  .navs button{flex:1;justify-content:center}
+  .search{flex-basis:100%}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="logo">MCP</div>
+    <div class="titles">
+      <h1>정보 교과 성취수준 MCP 길잡이</h1>
+      <p>2022 개정 교육과정 고등학교 「정보」 성취기준별 성취수준(A~E)과 최소 성취 학습자(MCP) 특성</p>
+    </div>
+    <div class="search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="성취기준 코드·키워드 검색 (예: 정렬, 03-08)" autocomplete="off">
+      <div class="results" id="results"></div>
+    </div>
+    <button class="icon-btn" id="helpBtn" aria-label="MCP 설명 보기">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9.5"/><path d="M9.5 9.2a2.6 2.6 0 0 1 5 .9c0 1.7-2.5 2.3-2.5 3.9"/><circle cx="12" cy="17.2" r=".6" fill="currentColor"/></svg>
+      MCP란?
+    </button>
+    <button class="icon-btn req-btn" id="listBtn" aria-label="수정 요청 목록">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><path d="m3.5 6 1 1 2-2M3.5 12l1 1 2-2M3.5 18l1 1 2-2"/></svg>
+      수정 요청 <span class="cnt" id="openCnt">0</span>
+    </button>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="steps" id="steps">
+    <div class="step" data-s="1"><span class="n">1</span>영역 선택</div><span class="sep"></span>
+    <div class="step" data-s="2"><span class="n">2</span>성취기준 선택</div><span class="sep"></span>
+    <div class="step" data-s="3"><span class="n">3</span>성취수준·MCP 보기</div>
+  </div>
+
+  <section>
+    <p class="label">① 영역 <small>정보 교과 5개 영역</small></p>
+    <div class="areas" id="areas"></div>
+  </section>
+
+  <section class="std-section" id="stdSection" hidden>
+    <p class="label">② 성취기준 <small id="stdCount"></small></p>
+    <div class="stds" id="stds"></div>
+  </section>
+
+  <div id="detailWrap"></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>성취수준·MCP 분석: <span id="credits"></span></div>
+    <div>웹앱 제작 <b>대전이문고등학교 Jennifer Hwang</b> · 영역명 출처: 2022 개정 교육과정 정보과 성취기준·성취수준 자료</div>
+  </div>
+</footer>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mt">
+  <div class="sheet">
+    <button class="close" id="closeModal" aria-label="닫기">×</button>
+    <h3 id="mt">MCP(최소 성취 학습자)란?</h3>
+    <p><b>MCP(Minimally Competent Person)</b>는 각 성취수준(A~E)에 <b>겨우 도달한 학생</b>, 즉 그 수준의 ‘문턱’에 있는 학습자가 보이는 특성을 진술한 것입니다. 성취수준 진술문이 해당 수준 학생 전체의 모습을 그린다면, MCP는 “최소한 이만큼은 할 수 있어야 이 수준”이라는 <b>경계선</b>을 보여 줍니다.</p>
+    <ul>
+      <li>평가 기준(채점 기준)·분할점수 설정, 수준별 피드백 설계에 활용할 수 있습니다.</li>
+      <li>이 앱에서 MCP는 원본 시트처럼 <span style="background:var(--mcp-bg);border:1px solid var(--mcp-line);padding:0 6px;border-radius:5px">노란색 상자</span>로 표시됩니다.</li>
+    </ul>
+    <h3 style="margin-top:18px">글자 색상 범주</h3>
+    <ul>
+      <li><span class="s-k">주황</span> 지식·이해 &nbsp; <span class="s-p">초록</span> 과정·기능 &nbsp; <span class="s-v">보라</span> 가치·태도</li>
+      <li>범례 칩을 누르면 해당 범주만 강조해서 볼 수 있습니다.</li><li>범주가 잘못 표시된 곳은 <b>범주 수정 요청</b> 버튼을 켠 뒤 해당 구절을 눌러 요청할 수 있습니다. 제작자가 반영하면 모든 선생님 화면에 바로 적용됩니다.</li>
+      <li><span class="auto">자동 분류</span> 표시는 원본 시트에서 색상이 지정되지 않아, 진술문의 서술어(설명·인지 / 분석·작성·설계 / 태도·자세·인식)를 기준으로 범주를 판단해 색을 입힌 칸입니다.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="modal" id="reqModal" role="dialog" aria-modal="true" aria-labelledby="rt">
+  <div class="sheet req-form" id="reqSheet"></div>
+</div>
+<div class="modal" id="listModal" role="dialog" aria-modal="true" aria-labelledby="lt">
+  <div class="sheet wide" id="listSheet"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const DATA = [{"no":1,"name":"컴퓨팅 시스템","authors":["정재웅","최민지"],"standards":[{"code":"12정01-01","text":"유무선 네트워크의 특성을 이해하고, 컴퓨팅 시스템 간 공유, 협력, 소통을 위한 네트워크 환경을 구성한다.","levels":{"A":{"d":[["k","유무선 네트워크의 특성을 정확하게 설명"],["","하고, "],["v","컴퓨팅 시스템 간의 네트워크 구성 및 공유 설정으로 협력적 의사소통을 위해 네트워크 환경을 적극적으로 활용하려는 자세를 갖출 "],["","수 있다."]],"m":[["k","유선·무선 네트워크의 특성"],["","을"],["p"," 연결 방식, 이동성, 안정성 등의 관점에서 정확하게 비교·설명하고, 주어진 상황에 적합한 네트워크 방식을 선택하여 컴퓨팅 시스템 간 네트워크를 구성하고 공유를 설정"],["","한 후 "],["v","협력적 의사소통에 적극적으로 활용"],["","할 수 있다."]],"da":true,"ma":false},"B":{"d":[["k","유무선 네트워크의 특성을 정확하게 설명"],["","하고, "],["v","컴퓨팅 시스템 간의 부분적인 네트워크 구성 및 공유 설정으로 협력적 의사소통을 위해 네트워크 환경을 활용하려는 자세를 갖출 "],["","수 있다."]],"m":[["k","유선·무선 네트워크의 주요 특성을 정확하게 설명"],["","하고, "],["p","주어진 상황에 적합한 네트워크 방식을 선택하여 컴퓨팅 시스템 간 네트워크를 구성하거나 필요한 공유를 설정"],["","하여 "],["v","협력적 의사소통에 활용"],["","할 수 있다."]],"da":true,"ma":false},"C":{"d":[["k","유무선 네트워크의 특성을 설명"],["","하고, "],["v","컴퓨팅 시스템 간의 부분적으로 네트워크 구성 및 공유 설정으로 협력적 의사소통을 위해 네트워크 환경을 활용하려는 자세를 갖출 "],["","수 있다."]],"m":[["k","유선·무선 네트워크의 기본적인 특성을 설명"],["","하고, "],["p","제시된 조건에 따라 컴퓨팅 시스템 간 네트워크를 부분적으로 구성하고 공유를 설정하여 자료를 주고받을 수"],[""," 있으며, "],["v","협력적 의사소통을 위해 네트워크 환경을 활용하려는 자세를 보일 수"],[""," 있다."]],"da":true,"ma":false},"D":{"d":[["k","유무선 네트워크의 특성을 설명"],["","하고, "],["v","컴퓨팅 시스템 간의 부분적 공유 설정으로 협력적 의사소통을 위한 네트워크 환경 활용의 필요성을 수용"],["","할 수 있다."]],"m":[["k","유선·무선 네트워크의 기본적인 특성을 일부 설명"],["","하고, "],["p","안내된 절차에 따라 컴퓨팅 시스템 간 기본적인 공유 설정을 수행"],["","하며 "],["v","협력과 소통을 위해 네트워크 환경이 필요함을 받아들일 수"],[""," 있다."]],"da":true,"ma":false},"E":{"d":[["k","유무선 네트워크의 특성을 인지"],["","하고, "],["p","컴퓨팅 시스템 간의 부분적으로 공유 설정"],["","할 수 있다."]],"m":[["k","유선·무선 네트워크의 기본적인 특성을 구분"],["","하고, "],["p","안내된 절차에 따라 컴퓨팅 시스템 간 공유를 위한 기본 설정의 일부를 수행"],["","할 수 있다."]],"da":true,"ma":false}}},{"code":"12정01-02","text":"사물인터넷의 구성과 동작 원리를 분석하고, 사물인터넷 기술로 인한 개인의 삶과 사회의 변화를 예측한다.","levels":{"A":{"d":[["k","사물인터넷 시스템에 대한 이해를 바탕으로 구체적 예시를 들어 구성과 동작 원리를 설명"],["","하고, "],["p","사물인터넷 기술로 인한 개인의 삶과 사회 변화를 예측"],["","하여 "],["v","대처하는 능동적 태도를 내면화"],["","할 수 있다."]],"m":[["k","사물인터넷 사례에서 주요 구성 요소의 역할과 데이터가 수집·전달·처리되는 동작 과정"],["","을 "],["p","정확하게 분석하여 설명하고, 사물인터넷 기술이 개인의 삶과 사회에 미칠 영향을 다양한 측면에서 예측"],["","하여 "],["v","변화에 대응하기 위한 적절한 방안을 제시"],["","할 수 있다."]],"da":true,"ma":false},"B":{"d":[["k","사물인터넷 시스템에 대한 이해를 바탕으로 구체적 예시를 들어 구성과 동작 원리를 설명"],["","하고, "],["p","사물인터넷 기술로 인한 개인의 삶과 사회 변화를 예측"],["","하여 "],["v","대처하는 능동적 태도를 인식"],["","할 수 있다."]],"m":[["k","구체적인 사물인터넷 사례"],["","를 통해 "],["k","주요 구성 요소와 동작 과정"],["","을 "],["p","설명하고"],["",", "],["k","사물인터넷 기술이 개인의 삶과 사회에 가져올 변화"],["","를 "],["p","두 가지 이상 예측하여"],[""," "],["v","변화에 대응할 필요성을 설명"],["","할 수 있다."]],"da":true,"ma":false},"C":{"d":[["k","사물인터넷 시스템의 구성 및 동작 원리 설명"],["","하고, "],["p","사물인터넷 기술로 인한 개인의 삶과 사회 변화를 예측"],["","하여 "],["v","대처하는 능동적 태도를 인식"],["","할 수 있다."]],"m":[["k","사물인터넷의 기본 구성 요소와 동작 과정"],["","을 "],["p","사례를 통해 설명하고"],["",", "],["k","사물인터넷 기술로 인해 개인의 삶이나 사회에 나타날 수 있는 변화 한 가지 이상"],["","을 "],["p","예측하여"],[""," "],["k","그 의미"],["","를 "],["p","설명할 수 있다."]],"da":true,"ma":false},"D":{"d":[["k","사물인터넷 시스템의 구성 및 동작 원리 설명"],["","하고, "],["p","사물인터넷 기술로 인한 개인의 삶과 사회 변화를 예측"],["","하여 "],["v","대처하는 태도를 수용"],["","할 수 있다."]],"m":[["k","사물인터넷의 주요 구성 요소와 동작 과정"],["","을 "],["p","부분적으로 설명하고"],["",", 교사가 제시한 사례를 바탕으로 "],["k","개인의 삶이나 사회에 나타날 수 있는 변화"],["","를 "],["p","한 가지 찾아 말할 수 있다."]],"da":true,"ma":false},"E":{"d":[["k","사물인터넷 시스템의 구성 및 동작 원리를 인지"],["","할 수 있다."]],"m":[["k","제시된 사물인터넷 사례에서 주요 구성 요소를 찾고, 장치들이 정보를 주고받으며 동작하는 기본적인 과정을 말할 수"],[""," 있다."]],"da":true,"ma":false}}},{"code":"12정01-03","text":"문제 해결에 적합한 피지컬 컴퓨팅 시스템 장치를 선택하여 사물인터넷 시스템을 설계한다.","levels":{"A":{"d":[["p","사물인터넷 시스템의 구성 및 동작 원리를 적용한 창의적 문제 해결 아이디어를 고안"],["","하고,"],["p","문제 해결에 적합한 피지컬 컴퓨팅 시스템 장치를 선택"],["","하여 "],["p","사물인터넷 시스템을 효율적으로 설계"],["","할 수 있다."]],"m":[["p","문제 상황을 분석하여 사물인터넷을 활용한 적절한 해결 아이디어를 고안"],["","하고, "],["k","문제 해결에 필요한 피지컬 컴퓨팅 장치를 기능"],["p","에 맞게 선택하여 선택 이유를 설명"],["","하며, "],["k","장치의 역할과 연결 관계 및 정보의 흐름"],["","이 드러나도록"],["p"," 효율적으로 사물인터넷 시스템을 설계"],["","할 수 있다."]],"da":true,"ma":false},"B":{"d":[["p","사물인터넷 시스템의 구성 및 동작 원리를 적용한 문제 해결 아이디어를 고안"],["","하고,"],["p","문제 해결에 적합한 피지컬 컴퓨팅 시스템 장치를 선택"],["","하여 "],["p","사물인터넷 시스템을 설계"],["","할 수 있다."]],"m":[["p","문제 상황에 적합한 사물인터넷 활용 아이디어를 고안"],["","하고, "],["k","문제 해결에 필요한 피지컬 컴퓨팅 장치"],["p","를 적절하게 선택하여 "],["k","각 장치의 역할과 연결 관계"],["p","가 드러나는 사물인터넷 시스템을 설계"],["","할 수 있다."]],"da":true,"ma":false},"C":{"d":[["p","사물인터넷 시스템의 구성 및 동작 원리를 고려한 문제 해결 아이디어를 고안"],["","하고,"],["p","문제 해결에 적합한 피지컬 컴퓨팅 시스템 장치를 선택"],["","하여 "],["p","사물인터넷 시스템을 설계"],["","할 수 있다."]],"m":[["k","주어진 문제 해결에 필요한 피지컬 컴퓨팅 장치"],["","를 "],["p","선택하고"],["",", "],["k","각 장치의 기본 역할"],["","을 "],["p","설명하며"],["",", "],["k","장치 간 연결 관계가 포함된 기본적인 사물인터넷 시스템"],["","을 "],["p","설계할 수 있다."]],"da":true,"ma":false},"D":{"d":[["p","사물인터넷 시스템의 구성 및 동작 원리를 고려한 문제 해결 아이디어를 고안"],["","하고,"],["p","문제 해결에 적합한 피지컬 컴퓨팅 시스템 장치를 선택"],["","하여 "],["p","사물인터넷 시스템을 부분적으로 설계"],["","할 수 있다."]],"m":[["","교사의 안내나 제시된 장치 목록을 참고하여 "],["p","문제 해결에 필요한 피지컬 컴퓨팅 장치"],["","를 "],["p","일부 선택하고"],["",", "],["k","제시된 설계 양식"],["","의 "],["p","일부를 완성하여"],[""," "],["k","사물인터넷 시스템"],["","을 "],["p","부분적으로 설계할 수 있다."]],"da":true,"ma":false},"E":{"d":[["p","사물인터넷 시스템의 구성 및 동작 원리를 고려한 문제 해결 아이디어를 고안"],["","할 수 있다."]],"m":[["","교사가 제시한 "],["k","실생활 문제와 사물인터넷 사례"],["","를 "],["p","참고하여"],[""," "],["k","문제 해결 아이디어"],["","를 "],["p","말하고"],["",", "],["k","해결에 활용할 수 있는 피지컬 컴퓨팅 장치"],["","를 "],["p","한 가지 이상 찾아 제시할 수 있다."]],"da":true,"ma":false}}}]},{"no":2,"name":"데이터","authors":["김재형","박소현"],"standards":[{"code":"12정02-01","text":"디지털 데이터 압축의 개념과 필요성을 이해하고, 압축의 효율성을 분석하여 평가한다.","levels":{"A":{"d":[["k","디지털 데이터 압축의 개념과 원리"],["",", "],["k","필요성"],["","을 정확하게 "],["p","설명"],["","하고, "],["k","압축 기법을 적용하여 압축 전과 후의 효율성"],["","을 비판적으로 "],["p","분석"],["","하고 "],["p","평가"],["","하여 "],["k","효율적인 데이터 표현"],["","의 긍정적인 면을 "],["p","활용"],["","하려는 자세를 "],["v","내면화"],["","할 수 있다."]],"m":[["k","디지털 데이터 압축의 개념과 원리 필요성을 정확하게 설명"],["","하고, "],["p","압축 기법을 적용"],["","하여 "],["p","압축 전과 후의 효율성을 비판적으로 분석"],["","하고 "],["p","평가"],["","할 수 있다."]],"da":false,"ma":true},"B":{"d":[["k","디지털 데이터 압축의 개념과 원리"],["",", "],["k","필요성"],["","을 정확하게 "],["p","설명"],["","하고, "],["k","압축 기법을 적용하여 압축 전과 후의 효율성"],["","을 "],["p","분석"],["","하고 "],["p","평가"],["","하여 "],["k","효율적인 데이터 표현"],["","의 긍정적인 면을 "],["p","활용"],["","하려는 자세를 "],["v","인식"],["","할 수 있다."]],"m":[["k","디지털 데이터 압축의 개념과 원리, 필요성을 정확하게 설명"],["","하고, "],["p","압축 기법을 적용"],["","하여 "],["p","압축 전과 후의 효율성을 분석"],["","하고 "],["p","평가"],["","할 수 있다."]],"da":false,"ma":true},"C":{"d":[["k","디지털 데이터 압축의 개념과 원리"],["",", "],["k","필요성"],["","을 "],["p","설명"],["","하고, "],["k","압축 기법을 적용하여 압축 전과 후의 효율성"],["","을 "],["p","분석"],["","하고 "],["p","평가"],["","하여 "],["k","효율적인 데이터 표현"],["","의 긍정적인 면을 "],["p","활용"],["","하려는 자세를 "],["v","인식"],["","할 수 있다."]],"m":[["k","디지털 데이터 압축의 개념과 원리, 필요성을 설명"],["","하고, "],["p","압축 기법을 적용"],["","하여 "],["p","압축 전과 후의 효율성을 분석"],["","하고 "],["p","평가"],["","할 수 있다."]],"da":false,"ma":true},"D":{"d":[["k","디지털 데이터 압축의 개념과 필요성"],["","을 "],["p","설명"],["","하고, "],["k","압축 기법을 적용하여 압축 전과 후의 효율성"],["","을 일부 "],["p","분석"],["","하고 "],["p","평가"],["","하여 "],["k","효율적인 데이터 표현"],["","의 긍정적인 면을 "],["p","활용"],["","하려는 자세를 "],["v","수용"],["","할 수 있다."]],"m":[["k","디지털 데이터 압축의 개념과 필요성을 설명"],["","하고, "],["p","압축 기법을 적용"],["","하여 "],["p","압축 전과 후의 효율설을 일부 분석"],["","하고 "],["p","평가"],["","할 수 있다."]],"da":false,"ma":true},"E":{"d":[["k","디지털 데이터 압축의 개념"],["","을 "],["p","인지"],["","하고, "],["k","압축 기법을 적용하여 압축 전과 후의 효율성"],["","을 일부 "],["p","분석"],["","하고 "],["p","평가"],["","할 수 있다."]],"m":[["k","디지털 데이터 압축의 개념을 인지"],["","하고, "],["p","압축 기법을 적용"],["","하여 "],["p","압축 전과 후의 효율성을 일부 분석"],["","하고 "],["p","평가"],["","할 수 있다."]],"da":false,"ma":true}}},{"code":"12정02-02","text":"암호화의 개념을 이해하고, 암호화를 활용하여 데이터를 안전하게 관리하는 사례를 비교⋅분석한다.","levels":{"A":{"d":[["k","디지털 데이터 암호화의 개념과 원리"],["","를 정확하게 "],["p","설명"],["","하고, "],["k","암호화 활용사례"],["","를 다양하게 "],["p","탐색"],["","하여 "],["k","데이터를 안전하게 "],["p","관리"],["k","하고 "],["p","보호"],["","하는 태도를 "],["v","내면화"],["","할 수 있다."]],"m":[["k","디지털 데이터 암호화의 개념과 원리를 정확하게 설명"],["","하고, "],["p","암호화 활용사례를 다양하게 탐색"],["","하여 "],["p","데이터를 안전하게 관리"],["","하고 "],["p","보호"],["","할 수 있다."]],"da":false,"ma":true},"B":{"d":[["k","디지털 데이터 암호화의 개념과 원리"],["","를 정확하게 "],["p","설명"],["","하고, "],["k","암호화 활용사례"],["","를 "],["p","탐색"],["","하여 "],["k","데이터를 안전하게 "],["p","관리"],["k","하고 "],["p","보호"],["","하는 태도를 "],["v","인식"],["","할 수 있다."]],"m":[["k","디지털 데이터 암호화의 개념과 원리를 정확하게 설명"],["","하고, "],["p","암호화 활용사례를 탐색"],["","하여 "],["p","데이터를 안전하게 관리"],["","하고 "],["p","보호"],["","할 수 있다."]],"da":false,"ma":true},"C":{"d":[["k","디지털 데이터 암호화의 개념과 원리"],["","를 "],["p","설명"],["","하고, "],["k","암호화 활용사례"],["","를 "],["p","탐색"],["","하여 "],["k","데이터를 안전하게 "],["p","관리"],["k","하고 "],["p","보호"],["","하는 태도를 "],["v","인식"],["","할 수 있다."]],"m":[["k","디지털 데이터 암화화의 개념과 원리를 설명"],["","하고, "],["p","암호화 활용사례를 탐색"],["","하여 "],["p","데이터를 안전하게 관리"],["","하고 "],["p","보호"],["","할 수 있다."]],"da":false,"ma":true},"D":{"d":[["k","디지털 데이터 암호화의 개념과 원리"],["","를 "],["p","설명"],["","하고, "],["k","암호화 활용사례"],["","를 부분적으로 "],["p","탐색"],["","하여 "],["k","데이터를 안전하게 "],["p","관리"],["k","하고 "],["p","보호"],["","하는 태도를 "],["v","수용"],["","할 수 있다."]],"m":[["k","디지털 데이터 암호화의 개념과 원리를 설명"],["","하고, "],["p","암호화 활용사례를 부분적으로 탐색"],["","하여 "],["p","데이터를 안전하게 관리"],["","하고 "],["p","보호"],["","할 수 있다."]],"da":false,"ma":true},"E":{"d":[["k","디지털 데이터 암호화의 개념"],["","을 "],["k","인지"],["","하고, "],["k","암호화 활용사례"],["","를 부분적으로 "],["p","탐색"],["","할 수 있다."]],"m":[["k","디지털 데이터 암호화의 개념을 인지"],["","하고, "],["p","암호화 활용사례를 부분적으로 탐색"],["","할 수 있다."]],"da":false,"ma":true}}},{"code":"12정02-03","text":"빅데이터의 개념과 특징에 대한 이해를 바탕으로, 문제 해결에 적합한 데이터를 수집한다.","levels":{"A":{"d":[["k","빅데이터의 개념과 특징"],["","을 정확하게 "],["p","설명"],["","하고, "],["k","문제 해결에 적합한 빅데이터"],["","를 "],["p","수집"],["","할 수 있다."]],"m":[["k","빅데이터의 개념과 특징을 정확하게 설명"],["","하고, "],["p","문제 해결에 가장 적합한 빅데이터를 수집"],["","할 수 있다."]],"da":false,"ma":true},"B":{"d":[["k","빅데이터의 개념과 특징"],["","을 정확하게 "],["p","설명"],["","하고, "],["k","문제 해결과 관련된 빅데이터"],["","를 "],["p","수집"],["","할 수 있다."]],"m":[["k","빅데이터의 개념과 특징을 설명"],["","하고, "],["p","문제 해결과 관련된 빅데이터를 수집"],["","할 수 있다."]],"da":false,"ma":true},"C":{"d":[["k","빅데이터의 개념과 특징"],["","을 "],["p","설명"],["","하고, "],["k","문제 해결과 관련된 빅데이터"],["","를 "],["p","수집"],["","할 수 있다."]],"m":[["k","빅데이터의 개념과 특징을 설명"],["","하고, "],["p","문제 해결에 필요한 기본적인 빅데이터를 수집"],["","할 수 있다."]],"da":false,"ma":true},"D":{"d":[["k","빅데이터의 개념"],["","을 "],["p","인지"],["","하고, "],["k","문제 해결과 관련된 데이터"],["","를 "],["p","수집"],["","할 수 있다."]],"m":[["k","빅데이터의 개념을 알"],["","고, "],["p","문제 해결과 관련된 데이터를 일부 수집"],["","할 수 있다"]],"da":false,"ma":true},"E":{"d":[["k","빅데이터의 개념"],["","을 "],["p","인지"],["","하고, "],["k","문제 해결과 관련된 데이터"],["","의 일부분을 "],["p","수집"],["","할 수 있다."]],"m":[["k","빅데이터의 개념을 알 "],["","수 있다."]],"da":false,"ma":true}}},{"code":"12정02-04","text":"빅데이터 분석 도구를 활용하여 데이터를 시각화하고 그 의미와 가치를 해석한다.","levels":{"A":{"d":[["k","빅데이터 분석 도구"],["","를 "],["p","활용"],["","하여 데이터를 효과적으로 "],["p","시각화"],["","하고 그 의미와 가치를 다양한 측면에서 "],["p","해석"],["","하여 "],["k","빅데이터 분석"],["","에 대한 사회적, 윤리적 측면의 가치를 "],["v","성찰"],["","할 수 있다."]],"m":[["p","빅데이터 분석 도구를 활용"],["","하여 "],["p","데이터를 효과적으로 시각화"],["","하고 "],["p","그 의미와 가치를 다양한 측면에서 해석"],["","하여 "],["v","빅데이터 분석에 대한 사회적, 윤리적 측면의 가치를 주도적으로 실천"],["","할 수 있다."]],"da":false,"ma":true},"B":{"d":[["k","빅데이터 분석 도구"],["","를 "],["p","활용"],["","하여 데이터를 효과적으로 "],["p","시각화"],["","하고 그 의미와 가치를 다양한 측면에서 "],["p","해석"],["","하여 "],["k","빅데이터 분석"],["","에 대한 사회적, 윤리적 측면의 가치를 "],["v","인식"],["","할 수 있다."]],"m":[["p","빅데이터 분석 도구를 활용"],["","하여 "],["p","데이터를 효과적으로 시각화"],["","하고 "],["p","그 의미와 가치를 다양한 측면에서 해석"],["","하여 "],["v","빅데이터 분석에 대한 사회적, 윤리적 측면의 가치를 파악"],["","할 수 있다."]],"da":false,"ma":true},"C":{"d":[["k","빅데이터 분석 도구"],["","를 "],["p","활용"],["","하여 데이터를 "],["p","시각화"],["","하고 그 의미와 가치를 "],["p","해석"],["","하여 "],["k","빅데이터 분석"],["","에 대한 사회적, 윤리적 측면의 가치를 "],["v","인식"],["","할 수 있다."]],"m":[["p","빅데이터 분석 도구를 활용"],["","하여 "],["p","데이터를 시각화"],["","하고 "],["p","그 의미와 가치를 해석"],["","하여 "],["v","빅데이터 분석에 대한 사회적, 윤리적 측면의 가치를 이해"],["","할 수 있다."]],"da":false,"ma":true},"D":{"d":[["k","빅데이터 분석 도구"],["","를 "],["p","활용"],["","하여 데이터를 제한적으로 "],["p","시각화"],["","하고 "],["p","해석"],["","하여 "],["k","빅데이터 분석"],["","에 대한 사회적, 윤리적 측면의 가치를 "],["v","수용"],["","할 수 있다."]],"m":[["p","빅데이터 분석 도구를 활용"],["","하여 "],["p","데이터를 일부 시각화"],["","하고 "],["p","해석"],["","하여 "],["v","빅데이터 분석에 대한 사회적, 윤리적 측면의 가치를 받아들일 "],["","수 있다."]],"da":false,"ma":true},"E":{"d":[["k","빅데이터 분석 도구"],["","를 "],["p","활용"],["","하여 데이터를 제한적으로 "],["p","시각화"],["","하고 "],["p","해석"],["","할 수 있다."]],"m":[["p","빅데이터 분석 도구를 활용"],["","하여 "],["p","데이터를 일부 시각화"],["","할 수 있다."]],"da":false,"ma":true}}}]},{"no":3,"name":"알고리즘과 프로그래밍","authors":["황유리","박정미"],"standards":[{"code":"12정03-01","text":"복잡한 문제를 해결 가능한 작은 문제로 분해하고 모델링 한다.","levels":{"A":{"d":[["k","문제 분해와 모델링 적용 방법"],["","을 "],["p","설명"],["","하고, "],["p","문제를 해결 가능한 작은 단위의 문제로 효율적으로 분해"],["","하고, 컴"],["p","퓨팅 시스템에서 처리 가능한 단순화나 구조화된 형태로 적합하게 모델링"],["","하여 "],["v","문제 해결을 위한 모델로 적극적으로 표현하려는 자세를 내면화"],["","할 수 있다."]],"m":[["k","문제 분해와 모델링 적용 방법을 설명"],["","하고, "],["p","실생활 문제를 해결 가능한 작은 단위의 문제로 효율적으로 분해"],["","하고, "],["p","컴퓨팅 시스템에서 처리 가능한 구조화된 형태로 모델링"],["","하여 "],["v","문제 해결을 위한 모델로 적극적으로 표현하려는 자세를 실천"],["","할 수 있다."]],"da":false,"ma":true},"B":{"d":[["k","문제 분해와 모델링 적용 방법"],["","을 "],["p","설명"],["","하고, "],["p","문제를 해결 가능한 작은 문제로"],[""," "],["p","분해"],["","하고, "],["p","컴퓨팅 시스템에서 처리 가능한 단순화나 구조화된 형태로 모델링"],["","하여 "],["v","문제 해결을 위한 모델로 적극적으로 표현하려는 자세를 인식"],["","할 수 있다."]],"m":[["k","문제 분해와 모델링 적용 방법을 설명"],["","하고, "],["p","문제를 해결 가능한 작은 단위의 문제로 효율적으로 분해"],["","하고, "],["p","컴퓨팅 시스템에서 처리 가능한 구조화된 형태로 단순화나 모델링"],["","하여 "],["v","문제 해결을 위한 모델로 표현하려는 자세를 인식"],["","할 수 있다."]],"da":false,"ma":true},"C":{"d":[["k","문제 분해와 모델링의 원리"],["","를 "],["p","설명하고"],["",", "],["p","문제를 해결 가능한 작은 문제로 분해"],["","하고, "],["p","컴퓨팅 시스템에서 처리 가능한 단순화나 구조화된 형태로 모델링"],["","하여 "],["v","문제 해결을 위한 모델로 적극적으로 표현하려는 자세를 인식"],["","할 수 있다."]],"m":[["k","문제 분해와 모델링의 주요 원리를 설명"],["","하고, "],["p","문제를 해결 가능한 작은 단위의 문제로 분해"],["","하고, "],["p","컴퓨팅 시스템에서 처리 가능한 단순한 형태로 모델링"],["","하여 "],["v","문제 해결을 위한 모델로 표현하려는 자세를 인식"],["","할 수 있다."]],"da":false,"ma":true},"D":{"d":[["k","문제 분해와 모델링의 원리"],["","를 "],["p","설명하고"],["",", "],["p","문제를 작은 문제로 일부 분해하거나 구조화된 형태로 부분적으로 모델링"],["","하여 "],["v","문제 해결을 위한 모델로 표현하려는 자세를 수용"],["","할 수 있다."]],"m":[["k","문제 분해와 모델링의 주요 원리를 설명"],["","하고, "],["p","문제를 작은 문제로 일부 분해"],["","하거나 "],["p","구조화된 형태로 부분적으로 모델링"],["","할 수 있다."]],"da":false,"ma":true},"E":{"d":[["k","문제 분해와 모델링의 개념"],["","을 "],["p","인지"],["","하고, "],["p","문제를 작은 문제로 일부 분해하거나 구조화된 형태로 부분적으로 모델링"],["","할 수 있다."]],"m":[["k","문제 분해와 모델링의 개념을 알 "],["","수 있다."]],"da":false,"ma":true}}},{"code":"12정03-02","text":"데이터를 정렬하는 다양한 알고리즘의 특징과 효율을 비교·분석한다.","levels":{"A":{"d":[["k","다양한 정렬 알고리즘의 원리와 수행 과정을 설명"],["","하고, "],["p","정렬 알고리즘별 특징과 효율성을 정확하게 비교 및 분석"],["","하여 "],["v","알고리즘 효율의 가치와 영향력을 적극적으로 탐구하는 태도를 내면화"],["","할 수 있다."]],"m":[["k","다양한 정렬 알고리즘의 원리와 수행 과정을 설명"],["","하고, "],["p","정렬 알고리즘별 특징과 효율성을 사례를 통해 정확하게 비교 및 분석"],["","하여 "],["v","알고리즘 효율의 가치와 영향력을 적극적으로 탐구하는 태도를 실천"],["","할 수 있다."]],"da":false,"ma":true},"B":{"d":[["k","다양한 정렬 알고리즘의 원리와 수행 과정을 설명"],["","하고, "],["p","정렬 알고리즘별 특징과 효율성을 비교 및 분석"],["","하여 "],["v","알고리즘 효율의 가치와 영향력을 적극적으로 탐구하는 태도를 인식"],["","할 수 있다."]],"m":[["k","다양한 정렬 알고리즘의 원리와 수행 과정을 설명"],["","하고, "],["p","정렬 알고리즘별 특징과 효율성을 비교 및 분석"],["","하여 "],["v","알고리즘 효율의 가치와 영향력을 탐구하는 태도를 실천"],["","할 수 있다."]],"da":true,"ma":true},"C":{"d":[["k","다양한 정렬 알고리즘의 수행 과정을 설명"],["","하고, "],["p","정렬 알고리즘별 특징과 효율성을 비교 및 분석"],["","하여 "],["v","알고리즘 효율의 가치와 영향력을 적극적으로 탐구하는 태도를 인식"],["","할 수 있다."]],"m":[["k","다양한 정렬 알고리즘의 수행 과정을 설명"],["","하고, "],["p","정렬 알고리즘별 특징과 효율성을 일부 비교 및 분석"],["","하여 "],["v","알고리즘 효율의 가치와 영향력을 탐구하는 태도를 실천"],["","할 수 있다."]],"da":true,"ma":true},"D":{"d":[["k","다양한 정렬 알고리즘의 수행 과정을 설명"],["","하고, "],["p","정렬 알고리즘별 특징과 효율성을 부분적으로 비교 및 분석"],["","하여 "],["v","알고리즘 효율의 가치와 영향력을 탐구하는 태도를 수용"],["","할 수 있다."]],"m":[["k","정렬 알고리즘의 수행 과정을 이해"],["","하고, "],["p","정렬 알고리즘별 특징과 효율성을 일부 비교"],["","하여 "],["v","알고리즘 효율의 가치를 탐구하는 태도를 받아들일 "],["","수 있다."]],"da":true,"ma":true},"E":{"d":[["k","다양한 정렬 알고리즘의 수행 과정을 인지"],["","하고, "],["p","정렬 알고리즘별 특징과 효율성을 부분적으로 비교 및 분석"],["","할 수 있다."]],"m":[["k","정렬 알고리즘의 수행 과정을 알 "],["","수 있다."]],"da":true,"ma":true}}},{"code":"12정03-03","text":"데이터를 탐색하는 다양한 알고리즘의 특징과 효율을 비교·분석한다.","levels":{"A":{"d":[["k","다양한 탐색 알고리즘의 원리와 수행 과정을 설명"],["","하고, "],["p","탐색 알고리즘별 특징과 효율성을 정확하게 비교 및 분석"],["","하여 "],["v","알고리즘 효율의 가치와 영향력을 적극적으로 탐구하는 태도를 내면화"],["","할 수 있다."]],"m":[["p","다양한 탐색 알고리즘의 원리와 수행 과정을 설명"],["","하고, "],["p","탐색 알고리즘별 특징과 효율성을 사례를 통해 정확하게 비교 및 분석"],["","하여 "],["v","알고리즘 효율의 가치와 영향력을 적극적으로 탐구하는 태도를 실천"],["","할 수 있다."]],"da":false,"ma":true},"B":{"d":[["p","다양한 탐색 알고리즘의 원리와 수행 과정을 설명"],["","하고, "],["p","탐색 알고리즘별 특징과 효율성을 비교 및 분석"],["","하여 "],["v","알고리즘 효율의 가치와 영향력을 적극적으로 탐구하는 태도를 인식"],["","할 수 있다."]],"m":[["p","다양한 탐색 알고리즘의 원리와 수행 과정을 설명"],["","하고, "],["p","탐색 알고리즘별 특징과 효율성을 비교 및 분석"],["","하여 "],["v","알고리즘 효율의 가치와 영향력을 탐구하는 태도를 실천"],["","할 수 있다."]],"da":true,"ma":true},"C":{"d":[["p","다양한 탐색 알고리즘의 수행 과정을 설명"],["","하고, "],["p","탐색 알고리즘별 특징과 효율성을 비교 및 분석"],["","하여 "],["v","알고리즘 효율의 가치와 영향력을 적극적으로 탐구하는 태도를 인식"],["","할 수 있다."]],"m":[["p","다양한 탐색 알고리즘의 수행 과정을 설명"],["","하고, "],["p","탐색 알고리즘별 특징과 효율성을 일부 비교 및 분석"],["","하여 "],["v","알고리즘 효율의 가치나 영향력을 탐구하는 태도를 실천"],["","할 수 있다."]],"da":true,"ma":true},"D":{"d":[["p","다양한 탐색 알고리즘의 수행 과정을 설명"],["","하고, "],["p","탐색 알고리즘별 특징과 효율성을 부분적으로 비교 및 분석"],["","하여 "],["v","알고리즘 효율의 가치와 영향력을 탐구하는 태도를 수용"],["","할 수 있다."]],"m":[["p","탐색 알고리즘의 수행 과정을 설명"],["","하고, "],["p","탐색 알고리즘별 특징과 효율성을 일부 비교"],["","하여 "],["v","알고리즘 효율의 가치를 탐구하는 태도를 받아들일 "],["","수 있다."]],"da":true,"ma":true},"E":{"d":[["p","다양한 탐색 알고리즘의 수행 과정을 인지"],["","하고, "],["p","탐색 알고리즘별 특징과 효율성을 부분적으로 비교 및 분석"],["","할 수 있다."]],"m":[["p","탐색 알고리즘의 수행 과정을 알 "],["","수 있다."]],"da":true,"ma":true}}},{"code":"12정03-04","text":"자료형의 종류와 특성을 알고, 적합한 자료형을 선택하여 프로그램을 작성한다.","levels":{"A":{"d":[["k","자료형의 종류와 특성을 정확하게 설명"],["","하고, "],["v","문제 해결에 적합한"],["p"," 자료형을 선택하여 오류 없이 프로그램을 작성"],["","할 수 있다."]],"m":[["k","자료형의 종류와 특성을 정확하게 설명"],["","하고, "],["p","문제 해결에 가장 적합한 자료형을 선택"],["","하여 "],["p","오류 없는 프로그램을 작성"],["","할 수 있다."]],"da":false,"ma":true},"B":{"d":[["k","자료형의 종류와 특성을 정확하게 설명"],["","하고, "],["p","문제 해결에 적합한 자료형을 선택"],["","하여 "],["p","프로그램을 작성"],["","할 수 있다."]],"m":[["k","자료형의 종류와 특성을 설명"],["","하고, "],["p","문제 해결에 적합한 자료형을 선택"],["","하여 "],["p","프로그램을 작성"],["","할 수 있다."]],"da":true,"ma":true},"C":{"d":[["k","자료형의 종류와 특성을 설명"],["","하고, "],["p","문제 해결에 적합한 자료형을 선택"],["","하여 "],["p","프로그램을 작성"],["","할 수 있다."]],"m":[["k","자료형의 종류와 특성을 설명"],["","하고, "],["p","문제 해결에 적합한 자료형을 선택"],["","하여 "],["p","기본적인 프로그램을 작성"],["","할 수 있다."]],"da":true,"ma":true},"D":{"d":[["k","자료형의 종류와 특성을 인지"],["","하고, "],["p","문제 해결에 적합한 자료형을 선택"],["","하여 "],["p","프로그램을 부분적으로 작성"],["","할 수 있다."]],"m":[["k","자료형의 종류와 특성을 이해"],["","하고, "],["p","문제 해결에 적합한 자료형을 선택"],["","하여 "],["p","프로그램을 일부 작성"],["","할 수 있다."]],"da":true,"ma":true},"E":{"d":[["k","자료형의 종류와 특성을 인지"],["","할 수 있다."]],"m":[["k","자료형의 종류와 특성을 알 "],["","수 있다."]],"da":true,"ma":true}}},{"code":"12정03-05","text":"표준입출력과 파일입출력을 활용한 프로그램을 작성한다.","levels":{"A":{"d":[["k","표준입출력과 파일입출력의 적용 방법을 설명"],["","하고, "],["v","문제 해결에 적합한"],["p"," 입력 데이터를 처리하여 출력하는 프로그램을 오류 없이 작성"],["","할 수 있다."]],"m":[["k","표준입출력과 파일입출력의 적용 방법을 설명"],["","하고, "],["p","문제 해결에 적합한 입력 데이터를 처리"],["","하여 "],["p","출력하는 프로그램을 작성"],["","할 수 있다."]],"da":false,"ma":true},"B":{"d":[["k","표준입출력과 파일입출력의 적용 방법을 설명"],["","하고, "],["p","문제 해결에 적합한 입력 데이터를 처리"],["","하여 "],["p","출력하는 프로그램을 작성"],["","할 수 있다."]],"m":[["k","표준입출력과 파일입출력의 기본 사용 방법을 설명"],["","하고, "],["p","문제 해결에 적합한 입력 데이터를 처리"],["","하여 "],["p","출력하는 프로그램을 작성"],["","할 수 있다."]],"da":true,"ma":true},"C":{"d":[["k","표준입출력과 파일입출력을 설명"],["","하고, "],["p","문제 해결에 적합한 입력 데이터를 처리"],["","하여 "],["p","출력하는 프로그램을 작성"],["","할 수 있다."]],"m":[["k","표준입출력과 파일입출력의 기본 사용 방법을 이해"],["","하고, "],["p","입력 데이터를 처리"],["","하여 "],["p","출력하는 기본적인 프로그램을 작성"],["","할 수 있다."]],"da":true,"ma":true},"D":{"d":[["k","표준입출력과 파일입출력을 인지"],["","하고, "],["p","문제 해결에 적합한 입력 데이터를 처리"],["","하여 "],["p","출력하는 프로그램을 부분적으로 작성"],["","할 수 있다."]],"m":[["k","표준입출력과 파일입출력을 알"],["","고, "],["p","입력 데이터를 처리"],["","하여 "],["p","출력하는 프로그램을 일부 작성"],["","할 수 있다."]],"da":true,"ma":true},"E":{"d":[["k","표준입출력과 파일입출력을 인지"],["","할 수 있다."]],"m":[["k","표준입출력과 파일입출력을 알 "],["","수 있다."]],"da":true,"ma":true}}},{"code":"12정03-06","text":"다차원 데이터 구조를 활용한 프로그램을 작성한다.","levels":{"A":{"d":[["k","다차원 데이터 구조의 적용 방법을 설명"],["","하고, "],["v","복잡한 문제를 해결하기 위해 "],["p","다차원 데이터 구조를 활용한 프로그램을 효율적으로 작성"],["","할 수 있다."]],"m":[["k","다차원 데이터 구조의 적용 방법을 설명"],["","하고, "],["p","복잡한 문제를 해결하기 위해 다차원 데이터 구조를 활용"],["","하여 "],["p","오류 없는 프로그램을 작성"],["","할 수 있다."]],"da":false,"ma":true},"B":{"d":[["k","다차원 데이터 구조의 적용 방법을 설명"],["","하고, "],["p","복잡한 문제를 해결하기 위해 다차원 데이터 구조를 활용한 프로그램을 작성"],["","할 수 있다."]],"m":[["k","다차원 데이터 구조의 기본 사용 방법을 설명"],["","하고, "],["p","복잡한 문제를 해결하기 위해 다차원 데이터 구조를 활용한 프로그램을 작성"],["","할 수 있다."]],"da":true,"ma":true},"C":{"d":[["k","다차원 데이터 구조를 설명"],["","하고, "],["p","복잡한 문제를 해결하기 위해 다차원 데이터 구조를 활용한 프로그램을 작성"],["","할 수 있다."]],"m":[["k","다차원 데이터 구조의 기본 사용 방법을 이해"],["","하고, "],["p","복잡한 문제를 해결하기 위해 다차원 데이터 구조를 활용한 간단한 프로그램을 작성"],["","할 수 있다."]],"da":true,"ma":true},"D":{"d":[["k","다차원 데이터 구조를 인지"],["","하고, "],["p","복잡한 문제를 해결하기 위해 다차원 데이터 구조를 활용한 프로그램을 부분적으로 작성"],["","할 수 있다."]],"m":[["k","다차원 데이터 구조의 개념을 알"],["","고, "],["p","다차원 데이터 구조를 활용한 프로그램을 일부 작성"],["","할 수 있다."]],"da":true,"ma":true},"E":{"d":[["k","다차원 데이터 구조를 인지"],["","할 수 있다."]],"m":[["k","다차원 데이터 구조의 개념을 알 "],["","수 있다."]],"da":true,"ma":true}}},{"code":"12정03-07","text":"다양한 제어 구조를 복합적으로 활용한 프로그램을 작성한다.","levels":{"A":{"d":[["k","제어 구조의 적용 방법을 설명"],["","하고, "],["p","다양한 제어 구조를 복합적으로 활용한 효율적인 프로그램을 작성"],["","할 수 있다."]],"m":[["k","제어 구조의 적용 방법을 설명"],["","하고, "],["p","다양한 제어 구조를 복합적으로 활용"],["","하여 "],["p","오류 없는 프로그램을 작성"],["","할 수 있다."]],"da":false,"ma":true},"B":{"d":[["k","제어 구조의 적용 방법을 설명"],["","하고, "],["p","다양한 제어 구조를 복합적으로 활용한 프로그램을 작성"],["","할 수 있다."]],"m":[["k","제어 구조의 적용 방법을 설명"],["","하고, "],["p","다양한 제어 구조를 복합적으로 활용한 프로그램을 작성"],["","할 수 있다."]],"da":true,"ma":true},"C":{"d":[["k","제어 구조를 설명"],["","하고, "],["p","다양한 제어 구조를 복합적으로 활용한 프로그램을 작성"],["","할 수 있다."]],"m":[["k","제어 구조의 기본 사용 방법을 이해"],["","하고, "],["p","제어 구조를 복합적으로 활용한 기본적인 프로그램을 작성"],["","할 수 있다."]],"da":true,"ma":true},"D":{"d":[["k","제어 구조를 인지"],["","하고, "],["p","다양한 제어 구조를 복합적으로 활용한 프로그램을 부분적으로 작성"],["","할 수 있다."]],"m":[["k","제어 구조의 개념을 알"],["","고, "],["p","제어 구조를 활용한 프로그램을 일부 작성"],["","할 수 있다."]],"da":true,"ma":true},"E":{"d":[["k","제어 구조를 인지"],["","할 수 있다."]],"m":[["k","제어 구조의 개념을 알 "],["","수 있다."]],"da":true,"ma":true}}},{"code":"12정03-08","text":"객체를 구현하는 클래스와 인스턴스를 활용하여 프로그램을 작성한다.","levels":{"A":{"d":[["k","클래스와 인스턴스의 적용 방법을 설명"],["","하고, "],["k","클래스를 정의"],["","하고 "],["k","인스턴스를 생성"],["","하여 "],["v","문제 해결에 적합한"],["p"," 객체를 활용한 효율적인 프로그램을 작성"],["","할 수 있다."]],"m":[["k","클래스와 인스턴스의 적용 방법을 설명"],["","하고, "],["p","클래스를 정의"],["","하고 "],["p","인스턴스를 생성"],["","하여 "],["p","문제 해결에 적합한 객체를 활용한 프로그램을 오류 없이 작성"],["","할 수 있다."]],"da":false,"ma":true},"B":{"d":[["k","클래스와 인스턴스의 적용 방법을 설명"],["","하고, "],["p","클래스를 정의"],["","하고 "],["p","인스턴스를 생성"],["","하여 "],["p","문제 해결에 필요한 객체를 활용한 프로그램을 작성"],["","할 수 있다."]],"m":[["k","클래스와 인스턴스의 적용 방법을 설명"],["","하고, "],["p","클래스를 정의"],["","하고 "],["p","인스턴스를 생성"],["","하여 "],["p","문제 해결에 필요한 객체를 활용한 프로그램을 작성"],["","할 수 있다."]],"da":true,"ma":true},"C":{"d":[["k","클래스와 인스턴스를 설명"],["","하고, "],["p","클래스를 정의"],["","하고 "],["p","인스턴스를 생성"],["","하여 "],["p","문제 해결에 필요한 객체를 활용한 프로그램을 작성"],["","할 수 있다."]],"m":[["k","클래스와 인스턴스의 기본 사용 방법을 설명"],["","하고, "],["p","클래스를 정의"],["","하고 "],["p","인스턴스를 생성"],["","하여, "],["p","문제 해결에 필요한 객체 활용 프로그램을 부분적으로 작성"],["","할 수 있다."]],"da":true,"ma":true},"D":{"d":[["k","클래스와 인스턴스를 인지"],["","하고, "],["p","인스턴스를 생성"],["","하여 "],["p","문제 해결에 필요한 객체를 활용한 프로그램을 부분적으로 작성"],["","할 수 있다."]],"m":[["k","클래스와 인스턴스의 개념을 알"],["","고, "],["p","인스턴스를 생성"],["","하거나 "],["p","매소드를 호출"],["","할 수 있다."]],"da":true,"ma":true},"E":{"d":[["k","클래스와 인스턴스를 인지"],["","할 수 있다."]],"m":[["k","클래스와 인스턴스의 개념을 알 "],["","수 있다."]],"da":true,"ma":true}}},{"code":"12정03-09","text":"실생활 및 다양한 학문 분야의 문제 해결을 위한 프로그램을 협력적으로 설계·구현한다.","levels":{"A":{"d":[["k","실생활 및 다양한 학문 분야의 문제 해결을 위한 효율적인 "],["p","알고리즘을 협력적으로 설계"],["k","하고"],["",", "],["p","프로그램을 오류 없이 구현"],["","하여 "],["k","프로그래밍"],["v","을 통해 적극적으로 문제를 해결하는 실천적 자세를 내면화"],["","할 수 있다."]],"m":[["p","실생활 및 다양한 학문 분야의 문제 해결을 위한 알고리즘을 협력적으로 설계"],["","하고, "],["p","프로그램을 오류 없이 구현"],["","하여 "],["v","프로그래밍을 통해 문제를 해결하는 실천적 자세를 주도적으로 실천"],["","할 수 있다."]],"da":false,"ma":true},"B":{"d":[["p","실생활 및 다양한 학문 분야의 문제 해결을 위한 알고리즘을 협력적으로 설계"],["","하고, "],["p","프로그램을 오류 없이 구현"],["","하여 "],["v","프로그래밍을 통해 적극적으로 문제를 해결하는 실천적 자세를 인식"],["","할 수 있다."]],"m":[["p","실생활 및 다양한 학문 분야의 문제 해결을 위한 알고리즘을 협력적으로 설계"],["","하고, "],["p","프로그램을 오류 없이 구현"],["","하여 "],["v","프로그래밍을 통해 문제를 해결하는 자세를 실천"],["","할 수 있다."]],"da":true,"ma":true},"C":{"d":[["p","실생활 및 다양한 학문 분야의 문제 해결을 위한 알고리즘을 협력적으로 설계"],["","하고, "],["p","프로그램을 구현"],["","하여 "],["v","프로그래밍을 통해 적극적으로 문제를 해결하는 실천적 자세를 인식"],["","할 수 있다."]],"m":[["p","실생활 및 다양한 학문 분야의 문제 해결을 위한 알고리즘을 설계"],["","하고, "],["p","프로그램을 구현"],["","하여 "],["v","프로그래밍을 통해 문제를 해결하는 자세를 실천"],["","할 수 있다."]],"da":true,"ma":true},"D":{"d":[["p","실생활 및 다양한 학문 분야의 문제 해결을 위한 알고리즘을 부분적으로 설계"],["","하고, "],["p","일부 프로그램을 구현"],["","하여 "],["v","프로그래밍을 통해 문제를 해결하는 실천적 자세를 수용"],["","할 수 있다."]],"m":[["p","실생활 및 문제 해결을 위한 알고리즘을 일부 설계"],["","하고, "],["p","기본적인 프로그램을 일부 구현"],["","하여 "],["v","프로그래밍을 통한 문제를 해결하는 자세를 받아 들일 "],["","수 있다."]],"da":true,"ma":true},"E":{"d":[["p","실생활 및 다양한 학문 분야의 문제 해결을 위한 알고리즘을 부분적으로 설계"],["","하고, "],["p","일부 프로그램을 구현"],["","할 수 있다."]],"m":[["p","실생활 문제 해결을 위해 간단한 알고리즘을 부분적으로 설계"],["","할 수 있다."]],"da":true,"ma":true}}},{"code":"12정03-10","text":"문제 해결을 위한 프로그램의 성능을 평가하고 공유한다.","levels":{"A":{"d":[["","문제 해결에 적합한 "],["k","프로그램의 성능"],["","을 "],["p","평가하고 공유하여"],[""," "],["v","디지털 사회에서 협력적 문제 해결력의 중요성을 인식하는 자세를 내면화"],["","할 수 있다."]],"m":[["p","문제 해결에 적합한 프로그램의 성능을 평가"],["","하고 "],["p","공유"],["","하여 "],["v","디지털 사회에서 협력적 문제 해결력의 중요성을 실천"],["","할 수 있다."]],"da":false,"ma":true},"B":{"d":[["p","문제 해결에 적합한 프로그램의 성능을 평가"],["","하고 "],["p","공유"],["","하여 "],["v","디지털 사회에서 협력적 문제 해결력의 중요성을 인식하는 자세를 수용"],["","할 수 있다."]],"m":[["p","문제 해결에 적합한 프로그램의 성능을 평가"],["","하고 "],["p","공유"],["","하여 "],["v","디지털 사회에서 협력적 문제 해결력의 중요성을 받아들일 "],["","수 있다."]],"da":true,"ma":true},"C":{"d":[["p","문제를 해결하기 위해 작성한 프로그램의 성능을 평가"],["","하고 "],["p","공유"],["","하여 "],["v","디지털 사회에서 협력적 문제 해결력의 중요성을 인식하는 자세를 수용"],["","할 수 있다."]],"m":[["p","문제를 해결하기 위해 작성한 프로그램의 성능을 평가"],["","하고 "],["p","공유"],["","하여 "],["v","디지털 사회에서 협력적 문제 해결력의 중요성을 받아들일 "],["","수 있다."]],"da":true,"ma":true},"D":{"d":[["p","문제를 해결하기 위해 작성한 프로그램을 공유"],["","하여 "],["v","디지털 사회에서 협력적 문제 해결력의 중요성을 인식하는 자세를 수용"],["","할 수 있다."]],"m":[["p","문제를 해결하기 위해 작성한 프로그램을 공유"],["","하여 "],["v","디지털 사회에서 협력적 문제 해결력의 중요성을 받아들일 "],["","수 있다."]],"da":true,"ma":true},"E":{"d":[["v","디지털 사회에서 협력적 문제 해결력의 중요성을 인식"],["","할 수 있다."]],"m":[["v","디지털 사회에서 협력적 문제 해결력의중요성을 알 "],["","수 있다."]],"da":true,"ma":true}}}]},{"no":4,"name":"인공지능","authors":["이두연","한수민"],"standards":[{"code":"12정04-01","text":"지능 에이전트의 개념과 특성을 이해하고, 인간과 인공지능의 관계를 분석한다.","levels":{"A":{"d":[["k","지능 에이전트의 개념과 특성을 명확하게 설명하고"],["",","],["p"," 다양한 인공지능 제품이나 서비스에서 지능 에이전트의 역할을 탐색하여"],[""," "],["v","인간과 인공지능의 관계에 대해 올바르게 인식할 수 있다"],["","."]],"m":[["k","지능 에이전트의 개념과 주요 특성을 정확히 설명"],["","하고, "],["p","다양한 인공지능 제품이나 서비스 사례에서 지능 에이전트의 역할을 구체적으로 탐색"],["","하며, "],["v","인간의 판단과 책임을 바탕으로 인간과 인공지능의 관계를 올바르게 인식"],["","할 수 있다."]],"da":false,"ma":true},"B":{"d":[["k","지능 에이전트의 개념과 특성을 명확하게 설명하고"],["",", "],["p","인공지능 제품이나 서비스에서 지능 에이전트의 역할을 탐색하여 "],["v","인간과 인공지능의 관계에 대해 올바르게 인식할 수 있다"],["","."]],"m":[["k","지능 에이전트의 개념과 주요 특성을 대체로 설명"],["","하고, "],["p","인공지능 제품이나 서비스 사례에서 지능 에이전트의 역할을 탐색"],["","하며, "],["v","인공지능 활용 시 필요한 주의점과 인간의 역할을 바르게 인식"],["","할 수 있다."]],"da":false,"ma":true},"C":{"d":[["k","지능 에이전트의 개념과 특성을 설명하고"],["",", "],["p","인공지능 제품이나 서비스에서 지능 에이전트의 역할을 탐색하여"],[""," "],["v","인간과 인공지능의 관계에 대해 올바르게 인식할 수 있다."]],"m":[["k","지능 에이전트의 기본 개념을 설명"],["","하고, "],["p","인공지능 제품이나 서비스 사례에서 지능 에이전트가 사용자를 돕는 역할을 한다는 점을 탐색"],["","하며, "],["v","인간의 확인과 판단이 필요함을 이해"],["","할 수 있다."]],"da":false,"ma":true},"D":{"d":[["k","지능 에이전트의 개념과 특성을 인지하고"],["",", "],["p","인공지능 제품이나 서비스에서 지능 에이전트의 역할을 부분적으로 탐색하여"],[""," "],["v","인간과 인공지능의 관계에 대해 올바르게 공감할 수 있다."]],"m":[["k","지능 에이전트가 인공지능과 관련된 개념임을 인지"],["","하고, "],["p","일부 인공지능 제품이나 서비스 사례를 통해 지능 에이전트의 역할을 부분적으로 탐색"],["","하며, "],["v","인간과 인공지능의 관계를 제한적으로 인식"],["","할 수 있다."]],"da":false,"ma":true},"E":{"d":[["k","지능 에이전트의 개념을 인지하고"],["p",", 인공지능 제품이나 서비스에서 지능 에이전트의 역할을 부분적으로 탐색할 수 있다."]],"m":[["p","교사의 안내를 받아 지능 에이전트와 관련된 인공지능 제품이나 서비스 사례를 알아보"],["","고, "],["v","인공지능이 사람을 도와주는 기술임을 제한적으로 인식"],["","할 수 있다."]],"da":false,"ma":true}}},{"code":"12정04-02","text":"기계학습의 개념을 이해하고, 지도학습과 비지도학습의 차이를 비교·분석한다.","levels":{"A":{"d":[["k","기계학습의 개념과 유형을 명확하게 설명"],["","하고, "],["p","지도학습과 비지도학습의 차이를 정확하게 비교ㆍ분석"],["","할 수 있다."]],"m":[["k","기계학습이 데이터를 바탕으로 규칙이나 패턴을 학습"],["","하여 "],["k","예측·분류·군집화 등에 활용되는 기술임을 설명"],["","할 수 있다. "],["p","지도학습과 비지도학습의 차이를 학습 데이터의 정답 유무, 학습 목적, 활용 사례를 기준으로 비교"],["","할 수 있으며, "],["k","분류·회귀·군집화 등의 예를 들어 설명"],["","할 수 있다."]],"da":true,"ma":true},"B":{"d":[["k","기계학습의 개념과 유형을 명확하게 설명"],["","하고, "],["p","지도학습과 비지도학습의 차이를 비교ㆍ분석"],["","할 수 있다."]],"m":[["k","기계학습의 기본 개념을 설명"],["","하고, "],["k","지도학습은 정답이 있는 데이터를 사용"],["","하고 "],["k","비지도학습은 정답이 없는 데이터에서 패턴을 찾는다는 차이를 설명"],["","할 수 있다. "],["p","또한 지도학습과 비지도학습의 사례를 각각 1가지 이상 제시"],["","하고 "],["p","주요 차이점을 비교"],["","할 수 있다."]],"da":true,"ma":true},"C":{"d":[["k","기계학습의 개념과 유형을 설명"],["","하고, "],["p","지도학습과 비지도학습의 차이를 비교ㆍ분석"],["","할 수 있다."]],"m":[["k","기계학습이 데이터를 이용"],["","하여 "],["k","컴퓨터가 학습하는 방법임을 설명"],["","할 수 있다. "],["k","지도학습과 비지도학습이 서로 다른 학습 방법이라는 점을 알"],["","고, "],["p","정답이 있는 데이터와 정답이 없는 데이터라는 기준으로 기본적인 차이를 비교"],["","할 수 있다. 다만 구체적인 분석이나 사례 설명은 일부 부족할 수 있다."]],"da":true,"ma":true},"D":{"d":[["k","기계학습의 개념과 유형을 인지"],["","하고, "],["p","지도학습과 비지도학습의 차이를 구별"],["","할 수 있다."]],"m":[["k","기계학습이 인공지능과 관련된 학습 방법이라는 점을 알"],["","고 "],["k","있으며, 지도학습과 비지도학습이라는 유형이 있음을 인지한다"],["",". 교사의 안내나 예시가 주어지면 정답이 있는 학습과 정답이 없는 학습을 구별할 수 있으나, 차이를 스스로 구체적으로 설명하는 데는 어려움이 있다."]],"da":true,"ma":true},"E":{"d":[["k","기계학습의 개념과 유형을 인지"],["","할 수 있다."]],"m":[["k","기계학습이 데이터를 이용해 컴퓨터가 학습하는 기술임을 제한적으로 이해"],["","할 수 있다. "],["k","지도학습과 비지도학습이라는 용어를 들어본 "],["","수준이며, 구체적인 차이나 사례 설명은 교사의 도움을 받아야 가능하다."]],"da":true,"ma":true}}},{"code":"12정04-03","text":"기계학습을 활용하여 해결할 수 있는 문제와 그렇지 않은 문제를 구분하고, 사회문제 해결에 기계학습을 적용한다.","levels":{"A":{"d":[["p","기계학습을 활용"],["","하여 "],["p","해결할 수 있는 문제와 그렇지 않은 문제를 명확히 구분"],["","하고, "],["p","실생활 및 사회문제에 적합한 기계학습 유형을 적용"],["","하여 "],["v","사회문제를 해결하기 위해 기계학습을 적극적으로 활용하는 자세를 내면화"],["","할 수 있다."]],"m":[["p","기계학습이 적용 가능한 문제와 적용하기 어려운 문제를 데이터의 존재 여부, 패턴 발견 가능성, 예측·분류 가능성을 기준으로 구분"],["","할 수 있다. "],["p","실생활 및 사회문제 사례를 선정"],["","하고, "],["p","해당 문제에 적합한 지도학습·비지도학습 등의 기계학습 유형을 연결"],["","하여 "],["p","해결 방안을 제시"],["","할 수 있으며, "],["v","기계학습 활용 과정에서 데이터 편향, 개인정보, 사회적 책임을 고려"],["","할 수 있다."]],"da":true,"ma":true},"B":{"d":[["p","기계학습을 활용"],["","하여 "],["p","해결할 수 있는 문제와 그렇지 않은 문제를 명확히 구분"],["","하고, "],["p","실생활 및 사회문제에 적합한 기계학습 유형을 적용"],["","하여 "],["v","사회문제를 해결하기 위해 기계학습을 활용하는 자세를 인식"],["","할 수 있다."]],"m":[["k","기계학습이 데이터를 기반으로 예측, 분류, 추천, 군집화 등에 활용될 수 있음을 이해"],["","하고, "],["p","기계학습으로 해결 가능한 문제와 그렇지 않은 문제를 비교적 명확하게 구분"],["","할 수 있다. "],["p","실생활 또는 사회문제 사례에 적합한 기계학습 유형을 선택"],["","하고, "],["k","선택한 이유를 기본적으로 설명"],["","할 수 있다"]],"da":true,"ma":true},"C":{"d":[["p","기계학습을 활용"],["","하여 "],["p","해결 가능한 문제인지를 구분"],["","하고 "],["p","실생활 문제에 기계학습 유형을 적용"],["","하여 "],["v","사회문제를 해결하기 위해 기계학습을 활용하는 자세를 인식"],["","할 수 있다."]],"m":[["k","기계학습이 적용될 수 있는 문제는 데이터가 있고 일정한 패턴을 찾을 수 있는 문제라는 점을 이해한다"],["",". "],["p","실생활 문제 중 기계학습으로 해결 가능한 사례를 제시"],["","하고, "],["p","지도학습 또는 비지도학습 중 하나의 유형을 연결"],["","하여 "],["p","설명"],["","할 수 있다. 다만 문제 분석이나 유형 선택의 근거는 다소 단순할 수 있다."]],"da":true,"ma":true},"D":{"d":[["p","기계학습 유형을 문제 해결에 적용"],["","하여 "],["v","사회문제를 해결하기 위해 기계학습을 수용하는 자세를 인식"],["","할 수 있다."]],"m":[["k","기계학습이 사회문제 해결에 활용될 수 있다는 점을 이해"],["","하고, "],["p","교사의 안내나 예시가 주어지면 기계학습을 적용할 수 있는 문제를 일부 구별"],["","할 수 있다. 다만 해결 가능한 문제와 그렇지 않은 문제를 스스로 명확히 구분하거나 적합한 기계학습 유형을 선택하는 데는 어려움이 있다."]],"da":true,"ma":true},"E":{"d":[["v","사회문제를 해결하기 위해 기계학습을 활용하는 자세를 수용"],["","할 수 있다."]],"m":[["k","교사의 설명이나 사례를 통해 기계학습이 사회문제 해결에 활용될 수 있음을 제한적으로 이해"],["","할 수 있다. 기계학습으로 해결 가능한 문제를 스스로 구분하기는 어렵지만, "],["v","제시된 사례를 보고 기계학습이 사람들의 문제 해결을 도울 수 있다는 점을 받아들일 "],["","수 있다."]],"da":true,"ma":true}}}]},{"no":5,"name":"디지털 문화","authors":["강원빈","이가연"],"standards":[{"code":"12정05-01","text":"디지털 기술이 사회에 미치는 영향력을 분석하고 발전 방향을 예측하여 진로를 설계한다.","levels":{"A":{"d":[["k","디지털 사회가 진로에 미치는 다양한 영향력을 설명"],["","하고, "],["p","디지털 기술의 발전에 따른 사회 변화와 연계한 진로를 구체적으로 설계"],["","하여 "],["v","미래 사회의 발전 방향에 대해 예측하고 통찰하려는 자세를 내면화"],["","할 수 있다."]],"m":[["p","디지털 기술 발전에 따른 사회 변화 사례를 2가지 이상 근거로 제시"],["","하며 "],["k","진로에 미치는 다양한 영향력을 설명"],["","하고, "],["p","이를 반영한 진로 로드맵을 작성하되 미래 사회 발전 방향에 대한 자신의 예측과 통찰(전망 및 대응 방안)을 포함"],["","하여 "],["p","서술"],["","할 수 있다."]],"da":false,"ma":true},"B":{"d":[["k","디지털 사회가 진로에 미치는 다양한 영향력을 설명"],["","하고, "],["p","디지털 기술의 발전에 따른 사회 변화와 연계한 진로를 설계"],["","하여 "],["v","미래 사회의 발전 방향에 대해 예측하고 통찰하려는 자세를 인식"],["","할 수 있다."]],"m":[["p","디지털 기술 발전에 따른 사회 변화 사례를 2가지 이상 제시"],["","하며 "],["k","진로에 미치는 다양한 영향력을 설명"],["","하고, "],["p","이를 반영한 진로 로드맵을 작성하되 미래 사회 발전 방향에 대한 예측 내용을 포함"],["","하여 "],["p","서술"],["","할 수 있다."]],"da":false,"ma":true},"C":{"d":[["k","디지털 사회가 진로에 미치는 영향력을 설명"],["","하고, "],["p","디지털 기술의 발전에 따른 사회 변화와 연계한 진로를 설계"],["","하여 "],["v","미래 사회의 발전 방향에 대해 예측하고 통찰하려는 자세를 인식"],["","할 수 있다."]],"m":[["p","디지털 기술 발전에 따른 사회 변화 사례를 1가지 이상 제시"],["","하며 "],["k","진로에 미치는 영향력을 설명"],["","하고, "],["p","이를 반영한 진로 로드맵을 작성하되 미래 사회 발전 방향에 대한 예측 내용을 간단히 포함"],["","하여 "],["p","서술"],["","할 수 있다."]],"da":false,"ma":true},"D":{"d":[["k","디지털 사회가 진로에 미치는 영향력을 인지"],["","하고, "],["p","디지털 기술의 발전에 따른 사회 변화와 연계하여 부분적으로 진로를 설계"],["","하여 "],["v","미래 사회의 발전 방향에 대해 예측과 통찰의 중요성을 공감"],["","할 수 있다."]],"m":[["p","디지털 기술 발전에 따른 사회 변화 사례를 1가지 제시"],["","하며 "],["k","진로에 미치는 영향력을 이야기"],["","할 수 있고, "],["p","교사가 제공한 진로 설계 활동지의 일부 항목(관심 직업, 관련 기술 등)을 작성"],["","할 수 있다."]],"da":false,"ma":true},"E":{"d":[["k","디지털 사회가 진로에 미치는 영향력을 인지"],["","하고, "],["p","디지털 기술의 발전에 따른 사회 변화와 연계하여 부분적으로 진로를 설계"],["","할 수 있다."]],"m":[["k","디지털 사회가 자신의 진로에 영향을 준 사례를 1가지 이상 말"],["","할 수 있고, "],["p","교사의 안내에 따라 진로 설계 활동지의 기본 항목(희망 직업명 등)을 작성"],["","할 수 있다."]],"da":false,"ma":true}}},{"code":"12정05-02","text":"보호해야 할 정보와 공유해야 할 정보를 구분하고, 올바른 정보 보호 방법을 실천한다.","levels":{"A":{"d":[["k","정보 보호와 정보 공유에 대해 명확히 설명"],["","하고, "],["p","개인정보 보호, 오ㆍ남용 방지 대책 등 다양한 실사례 탐색을 통한 정보 보호 방법을 실천"],["","하여 "],["v","올바른 정보 보호 의식을 내면화"],["","할 수 있다."]],"m":[["k","보호해야 할 정보와 공유해야 할 정보의 구분 기준을 근거를 들어 명확히 설명"],["","하고, "],["p","개인정보 유출·오남용 실제 사례를 2가지 이상 조사"],["","하여 "],["p","이를 바탕으로 자신의 SNS·클라우드 등 실생활 계정에 정보 보호 방법(공개 범위 제한, 접근 권한 설정 등)을 적용한 결과를 산출물로 제출"],["","할 수 있다."]],"da":false,"ma":true},"B":{"d":[["k","정보 보호와 정보 공유에 대해 명확히 설명"],["","하고, "],["p","개인정보 보호, 오ㆍ남용 방지 대책 등 실사례 탐색을 통한 정보 보호 방법을 실천"],["","하여 "],["v","올바른 정보 보호 의식을 인식"],["","할 수 있다."]],"m":[["k","보호해야 할 정보와 공유해야 할 정보의 구분 기준을 명확히 설명"],["","하고, "],["p","개인정보 유출·오남용 실제 사례를 1가지 이상 조사"],["","하여 "],["p","이를 바탕으로 자신의 실생활 계정에 정보 보호 방법을 적용한 결과를 제출"],["","할 수 있다."]],"da":false,"ma":true},"C":{"d":[["k","정보 보호와 정보 공유에 대해 설명"],["","하고, "],["p","개인정보 보호, 오ㆍ남용 방지 대책 등 실사례 탐색을 통한 정보 보호 방법을 실천"],["","하여 "],["v","올바른 정보 보호 의식을 인식"],["","할 수 있다."]],"m":[["k","보호해야 할 정보와 공유해야 할 정보를 예를 들어 설명"],["","하고, "],["p","개인정보 유출·오남용 사례를 1가지 조사"],["","하여 "],["p","관련된 정보 보호 방법을 자신의 계정 중 한 가지에 적용한 결과를 제출"],["","할 수 있다."]],"da":false,"ma":true},"D":{"d":[["k","정보 보호와 정보 공유에 대해 인지"],["","하고, "],["p","개인정보 보호, 오ㆍ남용 방지 대책 등 실사례 탐색을 통한 정보 보호 방법을 부분적으로 실천"],["","하여 "],["v","올바른 정보 보호 의식에 공감"],["","할 수 있다."]],"m":[["p","보호해야 할 정보와 공유해야 할 정보를 안내된 목록에서 구분"],["","할 수 있고, "],["p","교사가 제시한 정보 보호 방법(예: 비밀번호 설정) 중 한 가지를 자신의 계정에 부분적으로 적용"],["","할 수 있다."]],"da":false,"ma":true},"E":{"d":[["k","정보 보호와 정보 공유에 대해 인지"],["","하고, "],["p","개인정보 보호, 오ㆍ남용 방지 대책 등 실사례 탐색을 통한 정보 보호 방법을 부분적으로 실천"],["","할 수 있다."]],"m":[["p","보호해야 할 정보와 공유해야 할 정보의 예시를 듣고 알맞은 것끼리 짝지"],["","을 수 있고, "],["p","교사의 시범에 따라 정보 보호 방법 한 가지를 따라 실행"],["","할 수 있다."]],"da":false,"ma":true}}},{"code":"12정05-03","text":"정보보안의 필요성을 이해하고, 보안 기술을 활용하여 디지털 윤리를 실천한다.","levels":{"A":{"d":[["k","정보보안의 개념과 필요성을 명확하게 설명"],["","하고 "],["p","개인 암호 설정 및 변경, 기기 및 클라우드 접근 제어, 바이러스 백신 설정 등 상황에 따른 보안 기술을 적절히 활용하여 디지털 윤리를 실천"],["","하며 "],["v","올바른 보안 의식을 내면화"],["","할 수 있다."]],"m":[["k","정보보안의 개념과 필요성을 실제 침해 사고 사례를 근거로 명확히 설명"],["","하고, "],["p","개인 암호 설정·변경, 기기 및 클라우드 접근 권한 설정, 백신 프로그램 설치·검사 중 최소 3가지 보안 기술을 상황에 맞게 실습"],["","하여 "],["p","적용 결과를 산출물로 제출"],["","하며, "],["v","실습 중 타인의 정보를 침해하지 않도록 유의한 점을 서술"],["","할 수 있다."]],"da":false,"ma":true},"B":{"d":[["k","정보보안의 개념과 필요성을 명확하게 설명"],["","하고 "],["p","개인 암호 설정 및 변경, 기기 및 클라우드 접근 제어, 바이러스 백신 설정 등 보안 기술을 적절히 활용하여 디지털 윤리를 실천"],["","하며 "],["v","올바른 보안 의식을 인식"],["","할 수 있다."]],"m":[["k","정보보안의 개념과 필요성을 명확히 설명"],["","하고, "],["p","개인 암호 설정·변경, 기기 및 클라우드 접근 권한 설정, 백신 프로그램 설치·검사 중 최소 2가지 보안 기술을 실습"],["","하여 "],["p","적용 결과를 산출물로 제출"],["","할 수 있다."]],"da":false,"ma":true},"C":{"d":[["k","정보보안의 개념과 필요성을 설명"],["","하고 "],["p","개인 암호 설정 및 변경, 기기 및 클라우드 접근 제어, 바이러스 백신 설정 등 보안 기술을 적절히 활용하여 디지털 윤리를 실천"],["","하며 "],["v","올바른 보안 의식을 인식"],["","할 수 있다."]],"m":[["k","정보보안의 개념과 필요성을 설명"],["","하고, "],["p","개인 암호 설정·변경, 백신 프로그램 설치·검사 중 최소 2가지 보안 기술을 실습"],["","하여 "],["p","적용 결과를 제출"],["","할 수 있다."]],"da":false,"ma":true},"D":{"d":[["k","정보보안의 개념과 필요성을 인지"],["","하고 "],["p","개인 암호 설정 및 변경, 바이러스 백신 설정 등 보안 기술을 활용하여 디지털 윤리를 실천"],["","하며 "],["v","올바른 보안 의식에 공감"],["","할 수 있다."]],"m":[["k","정보보안이 필요한 이유를 1가지 말"],["","할 수 있고, "],["p","개인 암호 설정·변경, 백신 프로그램 설치 중 한 가지를 교사의 안내에 따라 실습"],["","할 수 있다."]],"da":false,"ma":true},"E":{"d":[["k","정보보안의 개념과 필요성을 인지"],["","하고, "],["p","개인 암호 설정 및 변경, 바이러스 백신 설정 등 보안 기술을 활용"],["","할 수 있다."]],"m":[["p","정보보안이 필요한 상황의 예를 들"],["","을 수 있고, "],["p","교사의 시범에 따라 개인 암호 설정 또는 백신 프로그램 설치 중 한 가지를 따라 실행"],["","할 수 있다."]],"da":false,"ma":true}}}]}];
+const CAT = {k:'지식·이해',p:'과정·기능',v:'가치·태도'};
+const AREA_ICONS = [
+ '<path d="M4 6h16v10H4z"/><path d="M9 20h6M12 16v4"/>',
+ '<ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/><path d="M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/>',
+ '<path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 5l-4 14"/>',
+ '<rect x="5" y="7" width="14" height="11" rx="3"/><path d="M12 3v4M9 12h.01M15 12h.01M9.5 15.5h5"/>',
+ '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>'
+];
+const state = {a:null, s:null, view:'both', focus:null};
+let store = {};
+try { store = JSON.parse(localStorage.getItem('mcp-prefs')||'{}'); if(store.view) state.view = store.view; } catch(e){}
+const save = () => { try{ localStorage.setItem('mcp-prefs', JSON.stringify({view:state.view})); }catch(e){} };
+
+const $ = s => document.querySelector(s);
+const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const hashOf = code => 's-' + code.replace('12정','').replace(/-/g,'-');
+const ALL = [];
+DATA.forEach((a,ai)=>a.standards.forEach((s,si)=>ALL.push({ai,si,code:s.code,text:s.text})));
+
+/* ---------- shared correction state ---------- */
+const R = {db:null, user:null, uid:null, isOwner:false, canWrite:null, requests:[], fixes:{}, loaded:false, stale:false, names:{}};
+const keyOf = (code,l,kind,i) => `${code}|${l}|${kind}|${i}`;
+function effCat(key, orig){ const f = R.fixes[key]; return f===undefined ? orig : (f==='n'?'':f); }
+function openReqKeys(){ const s=new Set(); R.requests.forEach(r=>{ if(r.status==='open') s.add(r.key); }); return s; }
+
+function segHTML(segs, prefix, openSet){
+  return segs.map(([c,t],i) => {
+    if(!prefix) return `<span class="s-${c||'n'}">${esc(t)}</span>`;
+    const key = prefix+'|'+i, e = effCat(key,c);
+    const cls = ['s-'+(e||'n')];
+    if(R.fixes[key]!==undefined) cls.push('fixed');
+    if(openSet && openSet.has(key)) cls.push('has-req');
+    return `<span class="${cls.join(' ')}" data-k="${esc(key)}">${esc(t)}</span>`;
+  }).join('');
+}
+function effSegs(segs,prefix){ return segs.map(([c,t],i)=>[effCat(prefix+'|'+i,c),t]); }
+function plain(segs){ return segs.map(s=>s[1]).join(''); }
+
+function renderAreas(){
+  $('#areas').innerHTML = DATA.map((a,i)=>`
+    <button class="area ${state.a===i?'on':''}" data-a="${i}" aria-pressed="${state.a===i}">
+      <span class="ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${AREA_ICONS[i]}</svg></span>
+      <span class="no">${a.no}영역</span>
+      <span class="nm">${a.name}</span>
+      <span class="meta">성취기준 ${a.standards.length}개</span>
+    </button>`).join('');
+}
+function renderStds(){
+  const sec = $('#stdSection');
+  if(state.a===null){ sec.hidden = true; return; }
+  sec.hidden = false;
+  const a = DATA[state.a];
+  $('#stdCount').textContent = `${a.name} · ${a.standards.length}개`;
+  $('#stds').innerHTML = a.standards.map((s,i)=>`
+    <button class="std ${state.s===i?'on':''}" data-s="${i}">
+      <span class="c">[${s.code}]</span><span class="t">${esc(s.text)}</span>
+    </button>`).join('');
+}
+function renderDetail(){
+  const w = $('#detailWrap');
+  if(state.a===null){ w.innerHTML = `<div class="empty-state"><div class="big">영역을 먼저 선택해 주세요</div>영역 → 성취기준을 고르면 A~E 성취수준과 MCP가 나타납니다.</div>`; return; }
+  if(state.s===null){ w.innerHTML = `<div class="empty-state"><div class="big">성취기준을 선택해 주세요</div>${DATA[state.a].name} 영역의 성취기준 중 하나를 고르세요.</div>`; return; }
+  const a = DATA[state.a], s = a.standards[state.s];
+  const idx = ALL.findIndex(x=>x.code===s.code);
+  const prev = ALL[idx-1], next = ALL[idx+1];
+  const focusCls = state.focus ? 'focus-'+state.focus : '';
+  const openSet = openReqKeys();
+  w.innerHTML = `
+  <section class="detail" aria-live="polite">
+    <div class="hero">
+      <div class="row1">
+        <span class="pill code">[${s.code}]</span>
+        <span class="pill">${a.no}영역 · ${a.name}</span>
+        <div class="navs">
+          <button id="prevBtn" ${prev?'':'disabled'} title="${prev?prev.code:''}">‹ 이전 성취기준</button>
+          <button id="nextBtn" ${next?'':'disabled'} title="${next?next.code:''}">다음 성취기준 ›</button>
+        </div>
+      </div>
+      <h2>${esc(s.text)}</h2>
+      <div class="by">분석: ${a.authors.join(' · ')}</div>
+    </div>
+
+    <div class="toolbar">
+      <div class="seg" role="tablist" aria-label="보기 방식">
+        <button data-v="both" class="${state.view==='both'?'on':''}">함께 보기</button>
+        <button data-v="desc" class="${state.view==='desc'?'on':''}">성취수준만</button>
+        <button data-v="mcp" class="${state.view==='mcp'?'on':''}">MCP만</button>
+      </div>
+      <div class="legend">
+        <span class="lt">범주 강조</span>
+        ${['k','p','v'].map(c=>`<button class="chip ${c} ${state.focus===c?'on':''} ${state.focus&&state.focus!==c?'off':''}" data-c="${c}" aria-pressed="${state.focus===c}"><span class="dot"></span>${CAT[c]}</button>`).join('')}
+      </div>
+      <button class="fix-toggle ${state.fixMode?'on':''}" id="fixToggle" aria-pressed="${!!state.fixMode}">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg>
+        ${state.fixMode?'수정 요청 모드 끄기':'범주 수정 요청'}
+      </button>
+    </div>
+    <div class="${state.fixMode?'fixmode':''}">
+    <p class="fix-hint">✏️ 범주가 잘못 표시된 <b>구절을 눌러</b> 올바른 범주를 골라 주세요. <span style="text-decoration:underline wavy #E0A100;text-underline-offset:4px">물결 밑줄</span>은 이미 검토 대기 중인 요청이 있는 구절입니다.</p>
+
+    <div class="levels view-${state.view} ${focusCls}">
+      ${'ABCDE'.split('').map(l=>{
+        const L = s.levels[l];
+        return `<article class="lv" data-l="${l}">
+          <div class="badge"><b>${l}</b><span>수준</span></div>
+          <div class="body">
+            <div class="block desc">
+              <div class="bh"><span class="bt">성취수준 ${l}</span>${L.da?'<span class="auto" title="원본에 색상 표시가 없어 서술어 기준으로 범주를 판단해 색을 입혔습니다">자동 분류</span>':''}
+                <button class="copy" data-copy="${esc(plain(L.d))}">${copyIcon()}복사</button></div>
+              <div class="tx">${segHTML(L.d, s.code+'|'+l+'|d', openSet)}</div>
+            </div>
+            <div class="block mcp">
+              <div class="bh"><span class="mcp-tag">${l} MCP</span><span class="bt">최소 성취 학습자 특성</span>${L.ma?'<span class="auto" title="원본에 색상 표시가 없어 서술어 기준으로 범주를 판단해 색을 입혔습니다">자동 분류</span>':''}
+                <button class="copy" data-copy="${esc(plain(L.m))}">${copyIcon()}복사</button></div>
+              <div class="tx">${segHTML(L.m, s.code+'|'+l+'|m', openSet)}</div>
+            </div>
+          </div>
+        </article>`;}).join('')}
+    </div>
+    </div>
+  </section>`;
+}
+function copyIcon(){return '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>';}
+
+function renderSteps(){
+  const cur = state.a===null?1:state.s===null?2:3;
+  document.querySelectorAll('.step').forEach(el=>{
+    const n = +el.dataset.s;
+    el.classList.toggle('on', n===cur);
+    el.classList.toggle('done', n<cur);
+  });
+}
+function render(){ renderAreas(); renderStds(); renderDetail(); renderSteps(); }
+
+function setHash(){
+  const h = state.s!==null ? hashOf(DATA[state.a].standards[state.s].code) : state.a!==null ? 'area-'+(state.a+1) : '';
+  if(location.hash.slice(1)!==h){ try{ history.replaceState(null,'', h?'#'+h:location.pathname+location.search); }catch(e){ location.hash = h; } }
+}
+function fromHash(){
+  const h = location.hash.slice(1);
+  let m;
+  if((m = h.match(/^area-([1-5])$/))){ state.a = +m[1]-1; state.s = null; }
+  else if(h.startsWith('s-')){
+    const f = ALL.find(x=>hashOf(x.code)===h);
+    if(f){ state.a=f.ai; state.s=f.si; }
+  }
+}
+function go(ai,si,scroll=true){
+  state.a = ai; state.s = si; render(); setHash();
+  if(scroll && si!==null){ const d=document.querySelector('.detail'); if(d) d.scrollIntoView({behavior:'smooth',block:'start'}); }
+}
+
+document.addEventListener('click', e=>{
+  if(e.target.closest('#fixToggle')){ state.fixMode = !state.fixMode; renderDetail(); return; }
+  const sp = e.target.closest('.fixmode .tx span[data-k]');
+  if(sp){ openReqForm(sp.dataset.k); return; }
+  if(e.target.closest('#listBtn')){ R.listFilter = R.listFilter||'open'; renderList(); $('#listModal').classList.add('show'); return; }
+  if(e.target.id==='reqModal' || e.target.closest('[data-close="req"]')){ $('#reqModal').classList.remove('show'); return; }
+  if(e.target.id==='listModal' || e.target.closest('[data-close="list"]')){ $('#listModal').classList.remove('show'); return; }
+  const op = e.target.closest('.opt');
+  if(op && !op.classList.contains('cur')){ document.querySelectorAll('.opt').forEach(o=>o.classList.toggle('on',o===op)); $('#reqSubmit') && ($('#reqSubmit').disabled=false); updateFallback(); return; }
+  if(e.target.closest('#reqSubmit')){ submitReq(); return; }
+  if(e.target.closest('#fbCopy')){ const t=$('#fbText').textContent; try{ navigator.clipboard.writeText(t).then(()=>toast('요청 내용을 복사했어요'),()=>toast('복사하지 못했어요. 직접 선택해 복사해 주세요')); }catch(err){ toast('복사하지 못했어요'); } return; }
+  const fl = e.target.closest('.filters button');
+  if(fl){ R.listFilter = fl.dataset.f; renderList(); return; }
+  const ac = e.target.closest('[data-act]');
+  if(ac){ reqAction(ac.dataset.act, ac.dataset.owner, ac.dataset.id); return; }
+  const jp = e.target.closest('[data-jump]');
+  if(jp){ const f = ALL.find(x=>x.code===jp.dataset.jump); if(f){ $('#listModal').classList.remove('show'); go(f.ai,f.si); } return; }
+  const ar = e.target.closest('.area');
+  if(ar){ const i=+ar.dataset.a; state.a=i; state.s=null; render(); setHash(); $('#stdSection').scrollIntoView({behavior:'smooth',block:'nearest'}); return; }
+  const st = e.target.closest('.std');
+  if(st){ go(state.a, +st.dataset.s); return; }
+  const sg = e.target.closest('.seg button');
+  if(sg){ state.view = sg.dataset.v; save(); renderDetail(); return; }
+  const ch = e.target.closest('.chip');
+  if(ch){ state.focus = state.focus===ch.dataset.c?null:ch.dataset.c; renderDetail(); return; }
+  if(e.target.closest('#prevBtn')||e.target.closest('#nextBtn')){
+    const s = DATA[state.a].standards[state.s];
+    const idx = ALL.findIndex(x=>x.code===s.code) + (e.target.closest('#prevBtn')?-1:1);
+    const t = ALL[idx]; if(t) go(t.ai,t.si,false); return;
+  }
+  const cp = e.target.closest('.copy');
+  if(cp){
+    const txt = cp.dataset.copy;
+    const done = ok => { cp.classList.toggle('ok',ok); cp.lastChild.textContent = ok?'복사됨':'복사 실패'; setTimeout(()=>{cp.classList.remove('ok'); cp.lastChild.textContent='복사';},1400); };
+    try{ navigator.clipboard.writeText(txt).then(()=>done(true),()=>done(false)); }catch(err){ done(false); }
+    return;
+  }
+  const rb = e.target.closest('.results button');
+  if(rb){ const f=ALL[+rb.dataset.i]; $('#q').value=''; hideRes(); go(f.ai,f.si); return; }
+  if(e.target.closest('#helpBtn')){ $('#modal').classList.add('show'); return; }
+  if(e.target.id==='modal' || e.target.closest('#closeModal')){ $('#modal').classList.remove('show'); return; }
+  if(!e.target.closest('.search')) hideRes();
+});
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape'){ ['#modal','#reqModal','#listModal'].forEach(m=>$(m).classList.remove('show')); hideRes(); }
+});
+
+/* search */
+const q = $('#q'), res = $('#results');
+let sel = -1;
+function hideRes(){ res.classList.remove('show'); sel=-1; }
+function norm(s){ return s.replace(/\s+/g,'').toLowerCase(); }
+function searchText(si){
+  const a = DATA[si.ai], s = a.standards[si.si];
+  let t = s.code + s.text + a.name;
+  'ABCDE'.split('').forEach(l=>{ t += plain(s.levels[l].d) + plain(s.levels[l].m); });
+  return norm(t);
+}
+const INDEX = ALL.map(searchText);
+q.addEventListener('input', ()=>{
+  const v = norm(q.value);
+  if(!v){ hideRes(); return; }
+  const hits = ALL.map((x,i)=>({x,i})).filter(o=>INDEX[o.i].includes(v) || o.x.code.replace(/\D/g,'').includes(v.replace(/\D/g,'')||'§'));
+  res.innerHTML = hits.length ? hits.slice(0,12).map((o,k)=>`<button data-i="${o.i}" class="${k===0?'on':''}"><span class="code">[${o.x.code}]</span>${esc(o.x.text)}</button>`).join('') : '<div class="empty">검색 결과가 없습니다.</div>';
+  sel = hits.length?0:-1;
+  res.classList.add('show');
+});
+q.addEventListener('keydown', e=>{
+  const items = [...res.querySelectorAll('button')];
+  if(!items.length) return;
+  if(e.key==='ArrowDown'||e.key==='ArrowUp'){
+    e.preventDefault();
+    sel = (sel + (e.key==='ArrowDown'?1:-1) + items.length) % items.length;
+    items.forEach((b,k)=>b.classList.toggle('on',k===sel));
+    items[sel].scrollIntoView({block:'nearest'});
+  } else if(e.key==='Enter' && sel>=0){ items[sel].click(); }
+});
+
+/* ---------- correction requests ---------- */
+const CATN = {k:'지식·이해',p:'과정·기능',v:'가치·태도',n:'범주 없음'};
+const OWNER_CONTACT = '대전이문고등학교 황유리 선생님 (dbflcoke@daejeonimun.kr)';
+const LVN = {d:'성취수준',m:'MCP'};
+function toast(t){ const el=$('#toast'); el.textContent=t; el.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(()=>el.classList.remove('show'),2200); }
+function parseKey(key){
+  const [code,l,kind,i] = key.split('|'); const idx=+i;
+  const f = ALL.find(x=>x.code===code); if(!f) return null;
+  const s = DATA[f.ai].standards[f.si]; const segs = kind==='d'?s.levels[l].d:s.levels[l].m;
+  if(!segs || !segs[idx]) return null;
+  return {code,l,kind,idx,orig:segs[idx][0]||'n',text:segs[idx][1],sentence:segs.map(x=>x[1]).join(''),cur:effCat(key,segs[idx][0])||'n'};
+}
+function catTag(c){ return `<span class="cat-tag ${c}">${CATN[c]}</span>`; }
+let curKey = null;
+function canSubmit(){ return R.db && R.uid && R.canWrite!==false; }
+function openReqForm(key){
+  const k = parseKey(key); if(!k) return; curKey = key;
+  const mine = R.requests.find(r=>r.key===key && r.status==='open' && r.owner===R.uid);
+  const others = R.requests.filter(r=>r.key===key && r.status==='open').length;
+  $('#reqSheet').innerHTML = `
+    <button class="close" data-close="req" aria-label="닫기">×</button>
+    <h3 id="rt">범주 수정 요청</h3>
+    <div class="meta">[${k.code}] · ${k.l} ${LVN[k.kind]} · 현재 ${catTag(k.cur)}</div>
+    <div class="phrase">“${esc(k.text.trim())}”</div>
+    ${others?`<div class="note" style="margin:-4px 0 10px">이 구절에 검토 대기 중인 요청이 ${others}건 있어요.${mine?' (내 요청 포함)':''}</div>`:''}
+    <label>올바른 범주</label>
+    <div class="opts">
+      ${['k','p','v','n'].map(c=>`<button class="opt ${c} ${c===k.cur?'cur':''}" data-to="${c}" ${c===k.cur?'aria-disabled="true"':''}><span class="dot"></span>${CATN[c]}</button>`).join('')}
+    </div>
+    <label for="reqNote">의견 <span style="font-weight:500;color:var(--ink-3)">(선택 · 구절 일부만 바뀌어야 하면 여기에 적어 주세요)</span></label>
+    <textarea id="reqNote" maxlength="500" placeholder="예: ‘설명하고’ 앞부분까지만 지식·이해로 보는 것이 맞습니다."></textarea>
+    <label for="reqName">이름·학교 <span style="font-weight:500;color:var(--ink-3)">(선택)</span></label>
+    <input id="reqName" maxlength="60" placeholder="예: ○○고 김정보">
+    <div id="reqArea"></div>`;
+  try{ const n = localStorage.getItem('mcp-name'); if(n) $('#reqName').value = n; }catch(e){}
+  renderReqArea();
+  $('#reqModal').classList.add('show');
+  $('#reqNote').addEventListener('input', updateFallback);
+  $('#reqName').addEventListener('input', updateFallback);
+}
+function renderReqArea(){
+  const area = $('#reqArea'); if(!area) return;
+  if(canSubmit()){
+    area.innerHTML = `<div class="btn-row"><button class="btn ghost" data-close="req">취소</button><button class="btn primary" id="reqSubmit" disabled>요청 보내기</button></div><div id="reqMsg"></div>`;
+  } else {
+    area.innerHTML = `<div class="fallback">${R.loaded||R.stale?'이 화면에서는 요청을 바로 저장할 수 없어요(보기 전용 권한 또는 로그인 필요).':'요청 저장 기능을 불러오는 중이에요. 바로 저장되지 않으면'} 아래 내용을 복사해 <b>${esc(OWNER_CONTACT)}</b>께 보내 주세요.
+      <pre id="fbText"></pre>
+      <div class="btn-row" style="margin-top:10px"><button class="btn ghost" data-close="req">닫기</button><button class="btn primary" id="fbCopy">요청 내용 복사</button></div></div>`;
+    updateFallback();
+  }
+}
+function selectedTo(){ const o=document.querySelector('.opt.on'); return o?o.dataset.to:null; }
+function updateFallback(){
+  const pre = $('#fbText'); if(!pre||!curKey) return;
+  const k = parseKey(curKey), to = selectedTo();
+  pre.textContent = `[정보 MCP 길잡이 · 범주 수정 요청]\n성취기준: [${k.code}] / ${k.l} ${LVN[k.kind]}\n구절: “${k.text.trim()}”\n현재 범주: ${CATN[k.cur]} → 요청 범주: ${to?CATN[to]:'(선택해 주세요)'}\n의견: ${($('#reqNote')||{}).value||'-'}\n요청자: ${($('#reqName')||{}).value||'-'}`;
+}
+/* one write at a time per document */
+const chains = {};
+function serial(path, fn){ const p=(chains[path]||Promise.resolve()).then(fn,fn); chains[path]=p.catch(()=>{}); return p; }
+function myDocItems(){ const d = R.rawDocs[R.uid]; return d && Array.isArray(d.items) ? d.items.map(x=>({...x})) : []; }
+async function submitReq(){
+  const to = selectedTo(); if(!to||!curKey) return;
+  const k = parseKey(curKey);
+  const btn = $('#reqSubmit'); btn.disabled = true; btn.textContent = '보내는 중…';
+  const name = $('#reqName').value.trim().slice(0,60), note = $('#reqNote').value.trim().slice(0,500);
+  try{ localStorage.setItem('mcp-name', name); }catch(e){}
+  const item = {id: Date.now().toString(36)+Math.random().toString(36).slice(2,6), key:curKey, code:k.code, level:k.l, kind:k.kind, idx:k.idx, text:k.text.trim().slice(0,400), from:k.cur, to, note, name, at:new Date().toISOString(), status:'open'};
+  const path = 'requests/'+R.uid;
+  try{
+    await serial(path, async()=>{ const items = myDocItems(); items.push(item); await R.db.doc(path).set({items}); R.rawDocs[R.uid]={items}; });
+    $('#reqModal').classList.remove('show'); toast('수정 요청을 보냈어요. 고맙습니다!');
+  }catch(err){
+    btn.disabled=false; btn.textContent='요청 보내기';
+    if(err && err.code==='invalid_argument'){ R.canWrite=false; renderReqArea(); updateFallback(); }
+    else $('#reqMsg').innerHTML = `<div class="msg err">${err&&err.code==='quota_exceeded'?'저장 공간이 가득 찼어요. 제작자에게 알려 주세요.':'저장하지 못했어요. 잠시 뒤 다시 시도해 주세요.'}</div>`;
+  }
+}
+async function reqAction(act, owner, id){
+  const doc = R.rawDocs[owner]; if(!doc) return;
+  const items = (doc.items||[]).map(x=>({...x}));
+  const it = items.find(x=>x.id===id); if(!it) return;
+  const path = 'requests/'+owner;
+  try{
+    if(act==='apply' || act==='revert'){
+      const k = parseKey(it.key); if(!k) return;
+      const fixes = {...R.fixes};
+      if(act==='apply'){ if(it.to===k.orig) delete fixes[it.key]; else fixes[it.key]=it.to; }
+      else delete fixes[it.key];
+      await serial('fixes/main', ()=>R.db.doc('fixes/main').set({map:fixes, at:new Date().toISOString()}));
+      R.fixes = fixes;
+      it.status = act==='apply'?'applied':'open';
+      if(act==='apply') items.forEach(x=>{ if(x!==it && x.key===it.key && x.status==='open' && x.to===it.to) x.status='applied'; });
+    } else if(act==='reject'){ it.status='rejected'; }
+    else if(act==='reopen'){ it.status='open'; }
+    else if(act==='delete'){ items.splice(items.indexOf(it),1); }
+    await serial(path, ()=>R.db.doc(path).set({items}));
+    R.rawDocs[owner] = {items}; rebuildRequests();
+    toast({apply:'반영했어요. 모든 선생님 화면에 바로 적용됩니다.',revert:'반영을 되돌렸어요.',reject:'보류로 표시했어요.',reopen:'다시 검토 대기로 돌렸어요.',delete:'요청을 삭제했어요.'}[act]);
+  }catch(err){ toast('처리하지 못했어요. 권한을 확인해 주세요.'); }
+}
+async function renderList(){
+  const f = R.listFilter||'open';
+  const cnt = s => R.requests.filter(r=>s==='all'||r.status===s).length;
+  const list = R.requests.filter(r=>f==='all'||r.status===f).sort((a,b)=>(b.at||'').localeCompare(a.at||''));
+  const ids = [...new Set(list.map(r=>r.owner))];
+  let profiles = {};
+  if(R.user && ids.length){ try{ profiles = await R.user.profiles(ids) || {}; }catch(e){} }
+  const who = r => esc(r.name || (profiles[r.owner]&&profiles[r.owner].name) || '선생님');
+  $('#listSheet').innerHTML = `
+    <button class="close" data-close="list" aria-label="닫기">×</button>
+    <h3 id="lt">범주 수정 요청 목록</h3>
+    <p class="note" style="margin:0 0 6px">${R.isOwner?'제작자 화면입니다. <b>반영</b>을 누르면 모든 선생님 화면의 색상이 바로 바뀝니다.':'선생님들이 보낸 범주 수정 요청입니다. 제작자가 검토한 뒤 반영합니다.'}${R.stale?' <span style="color:#B42318">· 저장소에 연결하지 못해 목록이 최신이 아닐 수 있어요.</span>':''}</p>
+    <div class="filters">
+      ${[['open','검토 대기'],['applied','반영됨'],['rejected','보류'],['all','전체']].map(([k,t])=>`<button data-f="${k}" class="${f===k?'on':''}">${t} ${cnt(k)}</button>`).join('')}
+    </div>
+    ${!R.db && !R.loaded ? '<div class="empty-list">요청 목록을 불러오는 중이에요…</div>' : !list.length ? '<div class="empty-list">해당하는 요청이 없어요.</div>' :
+    list.map(r=>{
+      const mine = r.owner===R.uid;
+      const acts = [];
+      if(R.isOwner){
+        if(r.status==='open'){ acts.push(`<button class="btn sm ok" data-act="apply" data-owner="${esc(r.owner)}" data-id="${esc(r.id)}">반영</button>`, `<button class="btn sm hold" data-act="reject" data-owner="${esc(r.owner)}" data-id="${esc(r.id)}">보류</button>`); }
+        if(r.status==='applied') acts.push(`<button class="btn sm hold" data-act="revert" data-owner="${esc(r.owner)}" data-id="${esc(r.id)}">반영 되돌리기</button>`);
+        if(r.status==='rejected') acts.push(`<button class="btn sm hold" data-act="reopen" data-owner="${esc(r.owner)}" data-id="${esc(r.id)}">다시 검토</button>`);
+      }
+      if(R.isOwner || (mine && r.status==='open')) acts.push(`<button class="btn sm del" data-act="delete" data-owner="${esc(r.owner)}" data-id="${esc(r.id)}">삭제</button>`);
+      return `<div class="rq">
+        <div class="h"><b>[${esc(r.code)}]</b> ${esc(r.level)} ${LVN[r.kind]||''} · ${who(r)}${mine?' (나)':''} · ${r.at?new Date(r.at).toLocaleDateString('ko-KR'):''}
+          <span class="st ${esc(r.status)}">${{open:'검토 대기',applied:'반영됨',rejected:'보류'}[r.status]||''}</span></div>
+        <div class="ph">“${esc(r.text||'')}”</div>
+        <div class="chg">${catTag(CATN[r.from]?r.from:'n')} → ${catTag(CATN[r.to]?r.to:'n')}</div>
+        ${r.note?`<div class="nt">${esc(r.note)}</div>`:''}
+        <div class="acts"><button class="btn sm ghost" data-jump="${esc(r.code)}">해당 성취기준 보기</button>${acts.join('')}</div>
+      </div>`;}).join('')}`;
+}
+function rebuildRequests(){
+  const out = [];
+  Object.entries(R.rawDocs).forEach(([owner,d])=>{ (d&&Array.isArray(d.items)?d.items:[]).forEach(it=>{ if(it && typeof it.key==='string') out.push({...it, owner}); }); });
+  R.requests = out;
+  $('#openCnt').textContent = out.filter(r=>r.status==='open').length;
+  renderDetail();
+  if($('#listModal').classList.contains('show')) renderList();
+}
+R.rawDocs = {};
+(async function initDb(){
+  if(!window.claude || typeof window.claude.use!=='function'){ R.loaded=true; return; }
+  try{
+    const [db, user] = await Promise.all([window.claude.use('db'), window.claude.use('user')]);
+    R.user = user;
+    if(user){
+      try{ R.isOwner = !!(await user.isOwner()); }catch(e){}
+      try{ R.uid = await user.id(); }catch(e){}
+      try{ const c = await user.can('data.write'); R.canWrite = c===null||c===undefined ? null : !!c; }catch(e){}
+      if(R.isOwner) R.canWrite = true;
+    }
+    if(!db){ R.loaded=true; renderReqArea(); return; }
+    R.db = db;
+    const timer = setTimeout(()=>{ R.stale=true; renderReqArea(); }, 10000);
+    db.collection('requests').onSnapshot(snap=>{
+      if(!snap.metadata.fromCache){ clearTimeout(timer); R.stale=false; }
+      R.loaded = true;
+      const raw = {}; snap.docs.forEach(d=>{ raw[d.id]=d.data(); });
+      R.rawDocs = raw; rebuildRequests(); renderReqArea();
+    }, err=>{ clearTimeout(timer); R.loaded=true; R.stale=true; renderReqArea(); });
+    db.doc('fixes/main').onSnapshot(d=>{
+      const m = d.exists && d.data() && d.data().map;
+      R.fixes = (m && typeof m==='object') ? {...m} : {};
+      Object.keys(R.fixes).forEach(k=>{ if(!['k','p','v','n'].includes(R.fixes[k])) delete R.fixes[k]; });
+      renderDetail();
+    }, ()=>{});
+  }catch(e){ R.loaded=true; }
+})();
+
+window.addEventListener('hashchange', ()=>{ fromHash(); render(); });
+$('#credits').textContent = DATA.map(a=>`${a.no}영역 ${a.authors.join('·')}`).join(' / ');
+fromHash(); render();
+</script>
+</body>
+</html>
